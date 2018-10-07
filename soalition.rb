@@ -170,7 +170,7 @@ def flash(uri, msg)
   redirect uri
 end
 
-def current_user
+def current_author
   redirect '/hello' unless @locals[:author]
   @locals[:author].downcase
 end
