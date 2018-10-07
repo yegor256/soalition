@@ -62,6 +62,7 @@ configure do
       c.release = VERSION
     end
   end
+  enable :sessions
   set :dump_errors, false
   set :show_exceptions, false
   set :config, config
