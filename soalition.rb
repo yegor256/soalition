@@ -53,7 +53,6 @@ configure do
       'dbname' => 'test',
       'password' => 'test'
     },
-    'token_secret' => '',
     'sentry' => ''
   }
   config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml'))) unless ENV['RACK_ENV'] == 'test'
@@ -68,7 +67,6 @@ configure do
   set :config, config
   set :logging, true
   set :server_settings, timeout: 25
-  set :codec, GLogin::Codec.new(config['token_secret'])
   set :pgsql, Pgsql.new(
     host: config['pgsql']['host'],
     port: config['pgsql']['port'].to_i,
