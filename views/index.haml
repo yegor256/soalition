@@ -1,0 +1,42 @@
+%p
+  First, you keep your recipients in
+  = succeed '.' do
+    %a{href: '/lists'} Lists
+  Each list contains
+  a collection of unique emails, which will receive your marketing emails.
+  Then, you create Letters in
+  = succeed '.' do
+    %a{href: '/lanes'} Lanes
+  Then, you link your
+  %a{href: '/lists'} Lists
+  with Lanes, by
+  = succeed '.' do
+    %a{href: '/campaigns'} Campaigns
+  Finally, you make your Letters and Campaigns
+  active and they start sending emails.
+
+%p
+  More information about configuration options you can find in
+  = succeed '.' do
+    %a{href: 'https://github.com/yegor256/soalition/blob/master/README.md'} README
+
+- total = lists.total_recipients
+- if !total.zero?
+  %p
+    Total recipients in all lists:
+    = succeed '.' do
+      %a{href: '/lists'}= total
+
+- delivered = campaigns.total_deliveries(1)
+- if !delivered.zero?
+  %p
+    %a{href: '/campaigns'}= delivered
+    letters delivered over the last 24 hours.
+    - bounced = campaigns.total_bounced(1)
+    - if !bounced.zero?
+      = bounced
+      of them bounced back, which is
+      - rate = bounced.to_f / delivered
+      = succeed '.' do
+        %span{class: (rate > 0.05 ? 'red' : '')}= "#{(rate * 100).round(2)}%"
+
