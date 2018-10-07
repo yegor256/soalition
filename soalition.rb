@@ -78,6 +78,7 @@ configure do
   use OmniAuth::Builder do
     provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']
   end
+  @locals[:author] = session[:author] if session[:author]
 end
 
 before '/*' do
