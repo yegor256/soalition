@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,9 +23,9 @@ source 'https://rubygems.org'
 ruby '2.5.1'
 
 gem 'codecov', '~>0.1'
-gem 'glogin', '~>0.4'
 gem 'haml', '~>5.0'
 gem 'minitest', '~>5.11', require: false
+gem 'omniauth-twitter'
 gem 'pg', '~>1.1'
 gem 'rack', '~>2.0'
 gem 'rack-ssl', '~>1.4'

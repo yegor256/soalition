@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Copyright (c) 2018 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -26,7 +28,7 @@ require 'json'
 require 'sinatra'
 require 'sinatra/cookies'
 require 'raven'
-require 'glogin/codec'
+require 'omniauth-twitter'
 require_relative 'version'
 require_relative 'objects/author'
 
@@ -74,6 +76,9 @@ configure do
     user: config['pgsql']['user'],
     password: config['pgsql']['password']
   )
+  use OmniAuth::Builder do
+    provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']
+  end
 end
 
 before '/*' do
@@ -83,9 +88,17 @@ before '/*' do
   }
 end
 
-get '/twitter-callback' do
-  cookies[:tlogin] = '??'
+get '/auth/twitter/callback' do
+  cookies[:login] = env['omniauth.auth'][:info][:nickname]
   redirect to('/')
+end
+
+get '/auth/failure' do
+  params[:message]
+end
+
+get '/login' do
+  redirect to('/auth/twitter')
 end
 
 get '/logout' do
