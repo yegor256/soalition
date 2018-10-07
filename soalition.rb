@@ -78,7 +78,6 @@ configure do
   use OmniAuth::Builder do
     provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']
   end
-  @locals[:author] = session[:author] if session[:author]
 end
 
 before '/*' do
@@ -86,6 +85,7 @@ before '/*' do
     ver: VERSION,
     request_ip: request.ip
   }
+  @locals[:author] = session[:author] if session[:author]
 end
 
 get '/auth/twitter/callback' do
