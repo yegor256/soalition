@@ -30,20 +30,20 @@
                 %img.logo{src: url('/logo.svg')}
         %nav
           %ul
-            %li
-              - if defined? author
+            - if defined? author
+              %li
                 %a{href: '/'}
                   = "@#{author}"
-              - else
-                %a{href: '/login'}
-                  Login
-            - if defined? user
               %li
                 %a{href: url('/posts')}
                   Posts
               %li
                 %a{href: '/logout'}
                   Logout
+            - else
+              %li
+                %a{href: '/login'}
+                  Login
         - if defined? flash_msg
           %p{style: 'background-color:darkgreen;color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
             = flash_msg
