@@ -89,7 +89,7 @@ before '/*' do
 end
 
 get '/auth/twitter/callback' do
-  cookies[:login] = env['omniauth.auth'][:info][:nickname]
+  cookies[:author] = env['omniauth.auth'][:info][:nickname]
   redirect to('/')
 end
 
@@ -102,7 +102,7 @@ get '/login' do
 end
 
 get '/logout' do
-  cookies.delete(:glogin)
+  cookies.delete(:author)
   redirect to('/')
 end
 
@@ -172,10 +172,10 @@ def flash(uri, msg)
 end
 
 def current_user
-  redirect '/hello' unless @locals[:user]
-  @locals[:user][:login].downcase
+  redirect '/hello' unless @locals[:author]
+  @locals[:author].downcase
 end
 
 def author
-  Author.new(login: current_user, pgsql: settings.pgsql)
+  Author.new(login: current_author, pgsql: settings.pgsql)
 end

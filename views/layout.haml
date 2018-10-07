@@ -31,11 +31,11 @@
         %nav
           %ul
             %li
-              - if defined? user
+              - if defined? author
                 %a{href: '/'}
-                  = "@#{user[:login]}"
+                  = "@#{author}"
               - else
-                %a{href: 'login_link'}
+                %a{href: '/login'}
                   Login
             - if defined? user
               %li
