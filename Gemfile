@@ -18,7 +18,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.3.3'
+ruby '2.5.1'
 
 gem 'codecov', '~>0.1'
 gem 'glogin', '~>0.4'
