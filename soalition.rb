@@ -41,8 +41,8 @@ configure do
   Haml::Options.defaults[:format] = :xhtml
   config = {
     'twitter' => {
-      'api_key' => '?',
-      'api_secret' => '?',
+      'api_key' => '',
+      'api_secret' => '',
       'access_token' => '',
       'access_secret' => ''
     },
@@ -88,7 +88,7 @@ before '/*' do
 end
 
 get '/auth/twitter/callback' do
-  cookies[:author] = env['omniauth.auth'][:info][:nickname]
+  session[:author] = env['omniauth.auth'][:info][:nickname]
   redirect to('/')
 end
 
@@ -101,7 +101,7 @@ get '/login' do
 end
 
 get '/logout' do
-  cookies.delete(:author)
+  session.delete(:author)
   redirect to('/')
 end
 
@@ -171,6 +171,6 @@ def flash(uri, msg)
 end
 
 def current_author
-  redirect '/hello' unless @locals[:author]
-  @locals[:author].downcase
+  redirect '/hello' unless session[:author]
+  session[:author].downcase
 end
