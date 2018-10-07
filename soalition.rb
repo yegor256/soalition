@@ -174,7 +174,3 @@ def current_author
   redirect '/hello' unless @locals[:author]
   @locals[:author].downcase
 end
-
-def author
-  Author.new(login: current_author, pgsql: settings.pgsql)
-end
