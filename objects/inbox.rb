@@ -36,7 +36,7 @@ class Inbox
     [
       @pgsql.exec(
         [
-          'SELECT post.id, post.author, post.uri, soalition.name FROM post',
+          'SELECT post.id, post.author, post.uri, soalition.name, soalition.id as soalition_id FROM post',
           'LEFT JOIN approve ON approve.post = post.id',
           'JOIN soalition ON post.soalition = soalition.id',
           'JOIN follow ON follow.soalition = soalition.id',
@@ -46,8 +46,8 @@ class Inbox
       ).map do |r|
         [
           "New post shared by [@#{r['author']}](https://twitter.com/#{r['author']})",
-          "in \"#{r['name']}\"",
-          "requires your approval: #{r['uri']};",
+          "in [#{r['name']}](/soalition?id=r['soalition_id'])",
+          "requires your approval: [#{r['uri']}](#{r['uri']});",
           "please, [approve](/do-approve?id=#{r['id']}) or [reject](/do-reject?id=#{r['id']})."
         ].join(' ')
       end,
@@ -64,7 +64,7 @@ class Inbox
       ).map do |r|
         [
           "A new post has been just shared by [@#{r['author']}](https://twitter.com/#{r['author']}),",
-          "they ask you to re-post, comment, or like it: #{r['uri']};",
+          "they ask you to re-post, comment, or like it: [#{r['uri']}](#{r['uri']});",
           "please, [click here](/repost?id=#{r['id']}) when done."
         ].join(' ')
       end

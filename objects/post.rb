@@ -57,7 +57,7 @@ class Post
   end
 
   def approved?
-    !@pgsql.exec('SELECT FROM approve WHERE post = $1 LIMIT 1', [@id]).empty?
+    !@pgsql.exec('SELECT * FROM approve WHERE post = $1 LIMIT 1', [@id]).empty?
   end
 
   def repost(author, uri)
@@ -69,7 +69,7 @@ class Post
   def allowed(author)
     !@pgsql.exec(
       [
-        'SELECT FROM follow',
+        'SELECT * FROM follow',
         'JOIN soalition ON follow.soalition = soalition.id',
         'JOIN post ON post.soalition = soalition.id',
         'WHERE follow.author = $1 AND post.id = $2'

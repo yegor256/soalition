@@ -23,9 +23,14 @@
 require 'minitest/autorun'
 require_relative 'test__helper'
 require_relative '../objects/author'
+require_relative '../objects/soalitions'
 
 class AuthorTest < Minitest::Test
-  def test_retrieves_inbox
-    # later
+  def test_retrieves_post
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    id = soalition.share(random_author, '#').id
+    post = Author.new(login: owner).post(id)
+    assert_equal('#', post.uri)
   end
 end

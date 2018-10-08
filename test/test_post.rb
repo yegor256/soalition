@@ -29,6 +29,7 @@ class PostTest < Minitest::Test
     owner = random_author
     soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
     post = soalition.share(random_author, '#')
+    assert_equal('#', post.uri)
     assert(!post.approved?)
     assert_raises do
       post.approve('stranger')
