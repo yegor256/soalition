@@ -35,19 +35,17 @@
     %a{href: "https://twitter.com/#{m}"}= "@#{m}"
 
 - soalition.posts.each do |p|
-  %p{class: p.approved? ? '' : 'gray'}
+  %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
     By
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
     %a{href: p.uri}= p.uri
     - if !p.approved?
       = "(not approved yet)"
-  - reposts = p.reposts.fetch
-  - if !reposts.empty?
-    %ul
-      - reposts.each do |r|
-        %li{style: (r['approved'] == 't' ? '' : 'gray')}
-          = succeed ':' do
-            %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-          %a{href: r['uri']}= "@#{r['uri']}"
-          - if r['approved'] == 'f'
-            = "(pending)"
+  %ul
+  - p.reposts.fetch.each do |r|
+    %li{style: (r['approved'] == 't' ? '' : 'gray')}
+      = succeed ':' do
+        %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+      %a{href: r['uri']}= "@#{r['uri']}"
+      - if r['approved'] == 'f'
+        = "(pending)"
