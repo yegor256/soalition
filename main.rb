@@ -64,6 +64,8 @@ configure do
     end
   end
   enable :sessions
+  set :views, File.dirname(__FILE__) + '/views'
+  set :public_folder, File.dirname(__FILE__) + '/public'
   set :dump_errors, false
   set :show_exceptions, false
   set :config, config
@@ -86,6 +88,7 @@ before '/*' do
     ver: VERSION,
     request_ip: request.ip
   }
+  session[:author] = 'tester' if ENV['RACK_ENV'] == 'test'
 end
 
 get '/auth/twitter/callback' do

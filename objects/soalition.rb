@@ -44,6 +44,10 @@ class Soalition
     @hash['description'] || @pgsql.exec('SELECT description FROM soalition WHERE id=$1', [@id])[0]['description']
   end
 
+  def icon
+    @hash['icon'] || @pgsql.exec('SELECT icon FROM soalition WHERE id=$1', [@id])[0]['icon']
+  end
+
   def size
     @pgsql.exec('SELECT COUNT(*) FROM follow WHERE soalition = $1', [@id])[0]['count'].to_i
   end
