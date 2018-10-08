@@ -68,14 +68,19 @@ class Tbot
           [
             'Hey, who are you? Please, click',
             "[this link](https://www.soalition.com/tbot?chat=#{number})",
-            'so that I can identify you.'
+            "so that I can identify you (don't forget to login via Twitter first)."
           ].join(' '),
           c: client
         )
       else
         post(
           number,
-          "I know you, you are `@#{author[0]['author']}`",
+          [
+            "I know you, you are `@#{author[0]['author']}`!",
+            "I can't really talk to you, I'm not a full-featured chat bot.",
+            'I will just update you here about the most important events,',
+            'which may happen in your [Soalition](https://www.soalition.com) account.'
+          ],
           c: client
         )
       end
