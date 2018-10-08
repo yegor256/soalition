@@ -60,8 +60,9 @@ class Post
     !@pgsql.exec('SELECT * FROM approve WHERE post = $1 LIMIT 1', [@id]).empty?
   end
 
-  def repost(author, uri)
-    @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [author, @id, uri])
+  def repost(friend, uri)
+    raise "You can't repost your own post ##{@id}" if author == friend
+    @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [friend, @id, uri])
   end
 
   private

@@ -171,7 +171,7 @@ get '/repost' do
   )
 end
 
-get '/do-repost' do
+post '/do-repost' do
   post = author.post(params[:id].to_i)
   post.repost(author.login, params[:uri])
   flash('/', "Your contribution to the post of @#{post.author} has been submitted")
