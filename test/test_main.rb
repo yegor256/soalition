@@ -58,7 +58,8 @@ class MainTest < Minitest::Test
   end
 
   def test_it_renders_soaltion
-    soalition = Soalitions.new(login: 'tester').create('hey you', '#', '-')
+    uri = 'https://www.google.com'
+    soalition = Soalitions.new(login: 'tester').create('hey you', uri, '-')
     get("/soalition?id=#{soalition.id}")
     assert_equal(200, last_response.status, last_response.body)
   end

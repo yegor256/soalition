@@ -28,9 +28,10 @@ require_relative '../objects/soalitions'
 class AuthorTest < Minitest::Test
   def test_retrieves_post
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
-    id = soalition.share(random_author, '#').id
+    uri = 'https://www.google.com'
+    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    id = soalition.share(random_author, uri).id
     post = Author.new(login: owner).post(id)
-    assert_equal('#', post.uri)
+    assert_equal(uri, post.uri)
   end
 end

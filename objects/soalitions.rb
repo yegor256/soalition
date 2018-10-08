@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'uri'
 require_relative 'pgsql'
 require_relative 'soalition'
 
@@ -34,6 +35,7 @@ class Soalitions
   end
 
   def create(name, icon, description)
+    raise "Invalid URL \"#{icon}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(icon)
     raise "The name \"#{name}\" is too short (less than 4)" if name.length < 4
     raise "The name \"#{name}\" is too long (over 32)" if name.length > 32
     raise 'The description is too long (over 200)' if description.length > 200

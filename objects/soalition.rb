@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'uri'
 require_relative 'pgsql'
 require_relative 'post'
 
@@ -76,6 +77,7 @@ class Soalition
   end
 
   def share(author, uri)
+    raise "Invalid URL \"#{uri}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(uri)
     s = score(author)
     raise "Your score #{s} is too low, you can't share" if s.negative?
     id = @pgsql.exec(

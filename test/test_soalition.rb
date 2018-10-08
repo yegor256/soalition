@@ -28,9 +28,10 @@ require_relative '../objects/inbox'
 class SoalitionTest < Minitest::Test
   def test_shares_post
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    uri = 'https://www.google.com'
+    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
     friend = random_author
-    post = soalition.share(friend, '#')
+    post = soalition.share(friend, uri)
     assert_equal(1, soalition.posts.count)
     assert_equal(friend, soalition.posts[0].author)
     assert_equal(1, Inbox.new(login: owner).fetch.count)
@@ -43,7 +44,7 @@ class SoalitionTest < Minitest::Test
   def test_lists_members
     owner = random_author
     soalitions = Soalitions.new(login: owner)
-    soalition = soalitions.create('hey you', '#', '-')
+    soalition = soalitions.create('hey you', 'https://www.google.com', '-')
     assert_equal(1, soalition.members.count)
     Soalitions.new(login: random_author).join(soalition.id)
     assert_equal(2, soalition.members.count)
@@ -51,9 +52,10 @@ class SoalitionTest < Minitest::Test
 
   def test_counts_score
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    uri = 'https://www.google.com'
+    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
     friend = random_author
-    post = soalition.share(friend, '#')
+    post = soalition.share(friend, uri)
     post.approve(owner)
     assert_equal(-1, soalition.score(friend))
   end
@@ -61,7 +63,7 @@ class SoalitionTest < Minitest::Test
   def test_joins_and_quits
     owner = random_author
     soalitions = Soalitions.new(login: owner)
-    soalition = soalitions.create('hey you', '#', '-')
+    soalition = soalitions.create('hey you', 'https://www.google.com', '-')
     friend = random_author
     Soalitions.new(login: friend).join(soalition.id)
     assert_equal(2, soalition.members.count)

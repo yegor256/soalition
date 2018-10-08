@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+require 'uri'
 require_relative 'pgsql'
 
 # Reposts.
@@ -33,6 +34,7 @@ class Reposts
   end
 
   def submit(friend, uri)
+    raise "Invalid URL \"#{uri}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(uri)
     raise "You can't repost your own post ##{@id}" if @post.author == friend
     @pgsql.exec(
       'INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3) RETURNING id',
