@@ -44,7 +44,35 @@ class Soalition
     @hash['description'] || @pgsql.exec('SELECT description FROM soalition WHERE id=$1', [@id])[0]['description']
   end
 
+  def size
+    @pgsql.exec('SELECT COUNT(*) FROM follow WHERE soalition = $1', [@id])[0]['count'].to_i
+  end
+
+  def score(author)
+    posts = @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM post',
+        'JOIN approve ON post.id = approve.post',
+        'WHERE soalition = $1 AND post.created > NOW() - INTERVAL \'90 DAYS\'',
+        'AND post.author = $2'
+      ].join(' '),
+      [@id, author]
+    )[0]['count'].to_i
+    reposts = @pgsql.exec(
+      [
+        'SELECT COUNT(*) FROM repost',
+        'JOIN post ON repost.post = post.id',
+        'JOIN soalition ON post.soalition = soalition.id',
+        'WHERE soalition = $1 AND repost.created > NOW() - INTERVAL \'90 DAYS\'',
+        'AND repost.author = $2 AND repost.approved = true'
+      ].join(' '),
+      [@id, author]
+    )[0]['count'].to_i
+    reposts - posts * size
+  end
+
   def share(author, uri)
+    raise "Your score #{score} is too low, you can't share" if score(author).negative?
     id = @pgsql.exec(
       'INSERT INTO post (author, soalition, uri) VALUES ($1, $2, $3) RETURNING id',
       [author, @id, uri]
