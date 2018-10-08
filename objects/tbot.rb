@@ -80,7 +80,7 @@ class Tbot
             "I can't really talk to you, I'm not a full-featured chat bot.",
             'I will just update you here about the most important events,',
             'which may happen in your [Soalition](https://www.soalition.com) account.'
-          ],
+          ].join(' '),
           c: client
         )
       end
