@@ -47,7 +47,7 @@ class Inbox
         [
           "New post shared by [@#{r['author']}](https://twitter.com/#{r['author']})",
           "in [#{r['name']}](/soalition?id=r['soalition_id'])",
-          "requires your approval: [#{r['uri']}](#{r['uri']});",
+          "requires your approval: [`#{r['uri']}`](#{r['uri']});",
           "please, [approve](/do-approve?id=#{r['id']}) or [reject](/do-reject?id=#{r['id']})."
         ].join(' ')
       end,
@@ -64,7 +64,7 @@ class Inbox
       ).map do |r|
         [
           "A new post has been just shared by [@#{r['author']}](https://twitter.com/#{r['author']}),",
-          "they ask you to re-post, comment, or like it: [#{r['uri']}](#{r['uri']});",
+          "they ask you to re-post, comment, or like it: [`#{r['uri']}`](#{r['uri']});",
           "please, [click here](/repost?id=#{r['id']}) when done."
         ].join(' ')
       end,
@@ -80,7 +80,7 @@ class Inbox
       ).map do |r|
         [
           "A new repost has been submitted by [@#{r['author']}](https://twitter.com/#{r['author']}),",
-          "to your post: [#{r['uri']}](#{r['uri']});",
+          "to your post: [`#{r['uri']}`](#{r['uri']});",
           "please, [approve](/approve-repost?id=#{r['id']}&post=#{r['post_id']})",
           "or [reject](/reject-repost?id=#{r['id']}&post=#{r['post_id']}) it."
         ].join(' ')
