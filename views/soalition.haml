@@ -42,10 +42,10 @@
     - if !p.approved?
       = "(not approved yet)"
   %ul
-  - p.reposts.fetch.each do |r|
-    %li{style: (r['approved'] == 't' ? '' : 'gray')}
-      = succeed ':' do
-        %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-      %a{href: r['uri']}= "@#{r['uri']}"
-      - if r['approved'] == 'f'
-        = "(pending)"
+    - p.reposts.fetch.each do |r|
+      %li{style: (r['approved'] == 't' ? '' : 'gray')}
+        = succeed ':' do
+          %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+        %a{href: r['uri']}= "@#{r['uri']}"
+        - if r['approved'] == 'f'
+          = "(pending)"
