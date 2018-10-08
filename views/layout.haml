@@ -30,13 +30,13 @@
                 %img.logo{src: url('/logo.svg')}
         %nav
           %ul
-            - if defined? author
+            - if session[:author]
               %li
                 %a{href: '/'}
-                  = "@#{author}"
+                  = "@#{session[:author]}"
               %li
-                %a{href: url('/posts')}
-                  Posts
+                %a{href: url('/share')}
+                  Share
               %li
                 %a{href: '/logout'}
                   Logout

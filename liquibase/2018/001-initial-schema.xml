@@ -27,8 +27,9 @@ SOFTWARE.
     <sql>
       CREATE TABLE "soalition" (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(64) NOT NULL,
-        description VARCHAR(256) NOT NULL,
+        name VARCHAR(32) NOT NULL,
+        icon TEXT NOT NULL,
+        description VARCHAR(200) NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
       )
     </sql>
@@ -59,7 +60,7 @@ SOFTWARE.
       )
     </sql>
     <sql>
-      CREATE TABLE "like" (
+      CREATE TABLE "repost" (
         id SERIAL PRIMARY KEY,
         author VARCHAR(32) NOT NULL,
         post INTEGER NOT NULL REFERENCES post(id),

@@ -20,8 +20,32 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require './main'
+require_relative 'pgsql'
 
-$stdout.sync = true
+# Inbox.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# License:: MIT
+class Inbox
+  def initialize(login:, pgsql: Pgsql::TEST)
+    @login = login
+    @pgsql = pgsql
+  end
 
-run Sinatra::Application
+  def fetch
+    @pgsql.exec(
+      [
+        'SELECT * FROM post',
+        'JOIN soalition ON post.soalition = soalition.id',
+        'JOIN follow ON follow.soalition = soalition.id',
+        'LEFT JOIN repost ON repost.post = post.id AND repost.author = $1',
+        'WHERE follow.author = $1 AND repost.id IS NULL'
+      ].join(' '),
+      [@login]
+    )
+  end
+
+  def respond
+    # ...
+  end
+end

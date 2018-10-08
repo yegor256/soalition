@@ -1,0 +1,9 @@
+%p
+  Your friends are expecting you to like their content:
+
+- inbox.fetch.each do |i|
+  %p
+    %img{src: i.icon}
+    %a{href: i.uri}
+    %a{href: "https://twitter.com/#{s.author}"}= s.author
+    &= s.name

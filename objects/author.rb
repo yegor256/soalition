@@ -21,6 +21,8 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'inbox'
+require_relative 'soalitions'
 
 # Author.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -32,5 +34,11 @@ class Author
     @pgsql = pgsql
   end
 
-  # tbd
+  def inbox
+    Inbox.new(login: @login, pgsql: @pgsql)
+  end
+
+  def soalitions
+    Soalitions.new(login: @login, pgsql: @pgsql)
+  end
 end

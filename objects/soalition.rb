@@ -20,8 +20,33 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require './main'
+require_relative 'pgsql'
 
-$stdout.sync = true
+# Soalition.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# License:: MIT
+class Soalition
+  attr_reader :id
 
-run Sinatra::Application
+  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+    @id = id
+    @pgsql = pgsql
+    @hash = hash
+  end
+
+  def name
+    @hash['name'] || @pgsql.exec('SELECT name FROM soalition WHERE id=$1', [@id])[0]['name']
+  end
+
+  def description
+    @hash['description'] || @pgsql.exec('SELECT description FROM soalition WHERE id=$1', [@id])[0]['description']
+  end
+
+  def share(author, uri)
+    @pgsql.exec(
+      'INSERT INTO post (author, soalition, uri) VALUES ($1, $2, $3) RETURNING id',
+      [author, @id, uri]
+    )
+  end
+end

@@ -14,14 +14,23 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require './main'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/soalitions'
 
-$stdout.sync = true
-
-run Sinatra::Application
+class SoalitionsTest < Minitest::Test
+  def test_retrieves_mine
+    soalitions = Soalitions.new(login: random_author)
+    assert_equal(0, soalitions.mine.count)
+    name = 'мои друзья'
+    id = soalitions.create(name, '#', 'Some new soalition').id
+    assert_equal(1, soalitions.mine.count)
+    assert_equal(name, soalitions.one(id).name)
+  end
+end

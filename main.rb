@@ -85,7 +85,6 @@ before '/*' do
     ver: VERSION,
     request_ip: request.ip
   }
-  @locals[:author] = session[:author] if session[:author]
 end
 
 get '/auth/twitter/callback' do
@@ -113,9 +112,20 @@ get '/hello' do
 end
 
 get '/' do
-  haml :index, layout: :layout, locals: merged(
-    title: '/'
+  haml :inbox, layout: :layout, locals: merged(
+    title: '/',
+    inbox: author.inbox
   )
+end
+
+get '/create' do
+  haml :create, layout: :layout, locals: merged(
+    title: '/create'
+  )
+end
+
+post '/do-create' do
+  author.soalitions.create(params[:name], params[:icon], params[:description])
 end
 
 get '/robots.txt' do
@@ -171,7 +181,7 @@ def flash(uri, msg)
   redirect uri
 end
 
-def current_author
+def author
   redirect '/hello' unless session[:author]
-  session[:author].downcase
+  Author.new(login: session[:author].downcase, pgsql: settings.pgsql)
 end
