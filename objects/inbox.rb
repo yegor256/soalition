@@ -41,7 +41,8 @@ class Inbox
           'JOIN soalition ON post.soalition = soalition.id',
           'JOIN follow ON follow.soalition = soalition.id',
           'WHERE follow.author = $1 AND follow.admin = true and approve.id IS NULL',
-          'ORDER BY post.created DESC'
+          'ORDER BY post.created DESC',
+          'LIMIT 25'
         ].join(' '),
         [@login]
       ).map do |r|
@@ -60,7 +61,8 @@ class Inbox
           'JOIN follow ON follow.soalition = soalition.id',
           'LEFT JOIN repost ON repost.post = post.id AND repost.author = $1',
           'WHERE follow.author = $1 AND repost.id IS NULL AND post.author != $1',
-          'ORDER BY post.created DESC'
+          'ORDER BY post.created DESC',
+          'LIMIT 25'
         ].join(' '),
         [@login]
       ).map do |r|
@@ -77,7 +79,8 @@ class Inbox
           'JOIN soalition ON post.soalition = soalition.id',
           'JOIN follow ON follow.soalition = soalition.id',
           'WHERE follow.author = $1 AND repost.approved = false AND post.author = $1',
-          'ORDER BY repost.created DESC'
+          'ORDER BY repost.created DESC',
+          'LIMIT 25'
         ].join(' '),
         [@login]
       ).map do |r|
