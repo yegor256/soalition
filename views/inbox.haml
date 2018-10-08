@@ -1,7 +1,11 @@
-%p
-  Here is your list of most important actions:
-
 - redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-- inbox.fetch.each do |md|
+- list = inbox.fetch
+- if list.empty?
   %p
-    = redcarpet.render(md)
+    Your inbox is empty, great job! :)
+- else
+  %p
+    Here is your list of most important actions:
+  - list.each do |md|
+    %p
+      = redcarpet.render(md)
