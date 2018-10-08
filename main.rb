@@ -142,7 +142,7 @@ end
 
 post '/do-share' do
   soalition = author.soalitions.one(params[:id])
-  soalition.share(current_author, params[:uri])
+  soalition.share(author.login, params[:uri])
   flash("/soalition?id=#{soalition.id}", "Your post was shared to the soalition ##{soalition.id}")
 end
 
