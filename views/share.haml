@@ -5,8 +5,10 @@
   You can share your content in these soaltions:
 
 - soalitions.mine.each do |s|
-  %div
-    %img{src: s.icon}
-    %a{href: "/"}
-    &= s.name
+  %div{style: 'width: 30%; text-align: center; display: inline-block;'}
+    %img{src: s.icon, style: 'height: 92px;'}
+    %br
+    %a{href: "/soalition?id=#{s.id}"}
+      &= s.name
+    %br
     &= s.description

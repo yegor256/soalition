@@ -1,12 +1,17 @@
 %p
-  %img{src: soalition.icon, style: 'height:64px;'}
+  %img{src: soalition.icon, style: 'height:92px;'}
 
 %h2
   &= soalition.name
 
 %form{method: 'POST', action: '/do-share'}
   %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
-  %input{type: 'uri', name: 'uri', id: 'uri', autofocus: 'true', size: 30, required: 'true', autocomplete: 'off'}
+  %input{type: 'url', name: 'uri', id: 'uri', autofocus: 'true', size: 50, required: 'true', autocomplete: 'off'}
+  %label.small.gray
+    Make sure the content you share is publicly accessible
+    by everyone in this soalition and is relevant to its main topic.
+    The most popular content is: blog posts, Tweets, Facebook posts,
+    and YouTube videos.
   %input{type: 'submit', value: 'Share'}
 
 - soalition.posts.each do |p|
