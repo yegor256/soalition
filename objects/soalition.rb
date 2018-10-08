@@ -76,7 +76,8 @@ class Soalition
   end
 
   def share(author, uri)
-    raise "Your score #{score} is too low, you can't share" if score(author).negative?
+    s = score(author)
+    raise "Your score #{s} is too low, you can't share" if s.negative?
     id = @pgsql.exec(
       'INSERT INTO post (author, soalition, uri) VALUES ($1, $2, $3) RETURNING id',
       [author, @id, uri]
