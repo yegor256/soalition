@@ -53,6 +53,7 @@ class PostTest < Minitest::Test
     owner = random_author
     soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
     post = soalition.share(random_author, '#')
-    post.repost(random_author, '#')
+    post.reposts.submit(random_author, '#')
+    assert_equal(1, post.reposts.fetch.count)
   end
 end

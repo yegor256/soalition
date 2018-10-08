@@ -21,61 +21,33 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
-require_relative 'reposts'
 
-# Post.
+# Reposts.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Post
-  attr_reader :id
-
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
-    @id = id
+class Reposts
+  def initialize(post:, pgsql: Pgsql::TEST)
+    @post = post
     @pgsql = pgsql
-    @hash = hash
   end
 
-  def author
-    @hash['author'] || @pgsql.exec('SELECT author FROM post WHERE id=$1', [@id])[0]['author']
+  def submit(friend, uri)
+    raise "You can't repost your own post ##{@id}" if @post.author == friend
+    @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [friend, @post.id, uri])
   end
 
-  def uri
-    @hash['uri'] || @pgsql.exec('SELECT uri FROM post WHERE id=$1', [@id])[0]['uri']
+  def fetch
+    @pgsql.exec('SELECT * FROM repost WHERE post = $1', [@post.id])
   end
 
-  def approve(author)
-    raise "@#{author} can't approve post ##{@id}" unless allowed(author)
-    @pgsql.exec(
-      'INSERT INTO approve (post, author) VALUES ($1, $2) RETURNING id',
-      [@id, author]
-    )
+  def approve(id, friend)
+    raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    @pgsql.exec('UPDATE repost SET approved = true WHERE id = $1', [id])
   end
 
-  def reject(author)
-    raise "@#{author} can't reject post ##{@id}" unless allowed(author)
-    @pgsql.exec('DELETE FROM post WHERE id = $1', [@id])
-  end
-
-  def approved?
-    !@pgsql.exec('SELECT * FROM approve WHERE post = $1 LIMIT 1', [@id]).empty?
-  end
-
-  def reposts
-    Reposts.new(post: self, pgsql: @pgsql)
-  end
-
-  private
-
-  def allowed(author)
-    !@pgsql.exec(
-      [
-        'SELECT * FROM follow',
-        'JOIN soalition ON follow.soalition = soalition.id',
-        'JOIN post ON post.soalition = soalition.id',
-        'WHERE follow.author = $1 AND post.id = $2'
-      ].join(' '),
-      [author, @id]
-    ).empty?
+  def reject(id, friend)
+    raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    @pgsql.exec('DELETE FROM repost WHERE id = $1', [id])
   end
 end

@@ -67,6 +67,23 @@ class Inbox
           "they ask you to re-post, comment, or like it: [#{r['uri']}](#{r['uri']});",
           "please, [click here](/repost?id=#{r['id']}) when done."
         ].join(' ')
+      end,
+      @pgsql.exec(
+        [
+          'SELECT repost.uri, repost.author, repost.id, post.id as post_id FROM repost',
+          'JOIN post ON repost.post = post.id',
+          'JOIN soalition ON post.soalition = soalition.id',
+          'JOIN follow ON follow.soalition = soalition.id',
+          'WHERE follow.author = $1 AND repost.approved = false'
+        ].join(' '),
+        [@login]
+      ).map do |r|
+        [
+          "A new repost has been submitted by [@#{r['author']}](https://twitter.com/#{r['author']}),",
+          "to your post: [#{r['uri']}](#{r['uri']});",
+          "please, [approve](/approve-repost?id=#{r['id']}&post=#{r['post_id']})",
+          "or [reject](/reject-repost?id=#{r['id']}&post=#{r['post_id']}) it."
+        ].join(' ')
       end
     ].flatten
   end

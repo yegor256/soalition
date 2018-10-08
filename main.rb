@@ -163,6 +163,18 @@ get '/do-reject' do
   flash('/', "The post of @#{post.author} has been rejected")
 end
 
+get '/approve-repost' do
+  post = author.post(params[:post].to_i)
+  post.reposts.approve(params[:id], author.login)
+  flash('/', "The repost of the post ##{post.id} has been approved")
+end
+
+get '/reject-repost' do
+  post = author.post(params[:post].to_i)
+  post.reposts.reject(params[:id], author.login)
+  flash('/', "The repost of the post ##{post.id} has been rejected")
+end
+
 get '/repost' do
   post = author.post(params[:id].to_i)
   haml :repost, layout: :layout, locals: merged(

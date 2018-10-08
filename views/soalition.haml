@@ -41,7 +41,7 @@
     %a{href: p.uri}= p.uri
     - if !p.approved?
       = "(not approved yet)"
-  - reposts = p.reposts
+  - reposts = p.reposts.fetch
   - if !reposts.empty?
     %ul
       - reposts.each do |r|
