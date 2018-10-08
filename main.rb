@@ -84,6 +84,11 @@ configure do
   use OmniAuth::Builder do
     provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']
   end
+  if ENV['RACK_ENV'] != 'test'
+    Thread.new do
+      settings.tbot.start
+    end
+  end
 end
 
 before '/*' do
