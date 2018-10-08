@@ -30,6 +30,8 @@ require_relative 'post'
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
 class Author
+  attr_reader :login
+
   def initialize(login:, pgsql: Pgsql::TEST)
     @login = login
     @pgsql = pgsql

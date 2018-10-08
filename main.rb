@@ -148,13 +148,13 @@ end
 
 get '/do-approve' do
   post = author.post(params[:id].to_i)
-  post.approve(current_author)
+  post.approve(author.login)
   flash('/', "The post of @#{post.author} has been approved")
 end
 
 get '/do-reject' do
   post = author.post(params[:id].to_i)
-  post.reject(current_author)
+  post.reject(author.login)
   flash('/', "The post of @#{post.author} has been rejected")
 end
 
@@ -168,7 +168,7 @@ end
 
 get '/do-repost' do
   post = author.post(params[:id].to_i)
-  post.repost(current_author, params[:uri])
+  post.repost(author.login, params[:uri])
   flash('/', "Your contribution to the post of @#{post.author} has been submitted")
 end
 

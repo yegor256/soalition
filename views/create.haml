@@ -8,7 +8,10 @@
 
 %form{method: 'POST', action: '/do-create'}
   %fieldset
+    %label Name:
     %input{type: 'text', name: 'name', id: 'name', placeholder: 'e.g. Stories about pets', autofocus: 'true', size: 30, maxlength: 32, required: 'true', autocomplete: 'off'}
+    %label URL of the logo:
     %input{type: 'url', name: 'icon', size: 40, autocomplete: 'off', value: 'https://www.soalition.com/icon.svg'}
+    %label Description (up to 200 symbols):
     %textarea{name: 'description', style: 'width: 100%; height: 4em;'}
     %input{type: 'submit', value: 'Create'}

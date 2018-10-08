@@ -4,8 +4,16 @@
 %h2
   &= soalition.name
 
+%p
+  &= soalition.description
+
+%p
+  Your score:
+  %strong= soalition.score(author.login)
+
 %form{method: 'POST', action: '/do-share'}
   %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
+  %label URL of the blog post:
   %input{type: 'url', name: 'uri', id: 'uri', autofocus: 'true', size: 50, required: 'true', autocomplete: 'off'}
   %label.small.gray
     Make sure the content you share is publicly accessible
