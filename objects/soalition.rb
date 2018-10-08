@@ -73,7 +73,7 @@ class Soalition
       ].join(' '),
       [@id, author]
     )[0]['count'].to_i
-    reposts - posts * size
+    (reposts - posts * size / 2).to_i
   end
 
   def share(author, uri)

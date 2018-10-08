@@ -38,8 +38,10 @@
       %input{type: 'submit', value: 'Share'}
 
 %p
-  Members:
-  - soalition.members.each_with_index do |m, i|
+  - members = soalition.members
+  = members.count
+  member(s):
+  - members.each_with_index do |m, i|
     - if i > 0
       = ', '
     %a{href: "https://twitter.com/#{m}"}= "@#{m}"

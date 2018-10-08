@@ -159,7 +159,13 @@ get '/join' do
   flash("/soalition?id=#{id}", 'You are a member already') if author.soalitions.member?(id)
   soalition = author.soalitions.join(id)
   soalition.members(admins_only: true).each do |user|
-    settings.tbot.notify(user, "A new member `@#{author.login}` joined \"#{soalition.name}\"")
+    settings.tbot.notify(
+      user,
+      [
+        "A new member `@#{author.login}` joined",
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+      ].join(' ')
+    )
   end
   flash("/soalition?id=#{soalition.id}", "You have successfully joined soalition ##{soalition.id}")
 end
@@ -230,6 +236,15 @@ end
 get '/quit' do
   soalition = author.soalitions.one(params[:id])
   soalition.quit(author.login)
+  soalition.members(admins_only: true).each do |user|
+    settings.tbot.notify(
+      user,
+      [
+        "A member `@#{author.login}` quit",
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+      ].join(' ')
+    )
+  end
   flash('/', 'You are out, we are sorry :(')
 end
 
