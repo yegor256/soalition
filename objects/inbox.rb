@@ -74,7 +74,7 @@ class Inbox
           'JOIN post ON repost.post = post.id',
           'JOIN soalition ON post.soalition = soalition.id',
           'JOIN follow ON follow.soalition = soalition.id',
-          'WHERE follow.author = $1 AND repost.approved = false'
+          'WHERE follow.author = $1 AND repost.approved = false AND post.author = $1'
         ].join(' '),
         [@login]
       ).map do |r|

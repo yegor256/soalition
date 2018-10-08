@@ -8,7 +8,10 @@
 - list = inbox.fetch
 - if list.empty?
   %p
-    Your inbox is empty, great job! :)
+    Your inbox is empty,
+    = succeed '!' do
+      %strong.green great job
+    = ':)'
 - else
   %p
     Here is your list of most important actions:

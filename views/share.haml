@@ -15,4 +15,5 @@
     &= s.description
     %br
     Score:
-    %strong= s.score(author.login)
+    - score = s.score(author.login)
+    %strong{class: (score.negative? ? 'red' : 'green')}= score
