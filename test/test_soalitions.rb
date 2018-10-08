@@ -38,7 +38,8 @@ class SoalitionsTest < Minitest::Test
     id = Soalitions.new(login: random_author).create('the name', '#', 'Some new soalition').id
     soalitions = Soalitions.new(login: random_author)
     assert_equal(0, soalitions.mine.count)
-    soalitions.join(id)
+    soalition = soalitions.join(id)
     assert_equal(1, soalitions.mine.count)
+    assert_equal(id, soalition.id)
   end
 end

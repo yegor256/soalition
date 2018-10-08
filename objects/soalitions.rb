@@ -53,17 +53,17 @@ class Soalitions
   end
 
   def join(soalition)
-    id = @pgsql.exec(
+    @pgsql.exec(
       'INSERT INTO follow (author, soalition) VALUES ($1, $2) RETURNING id',
       [@login, soalition]
     )
-    Soalition.new(id: id, pgsql: @pgsql)
+    Soalition.new(id: soalition, pgsql: @pgsql)
   end
 
   def mine
     @pgsql.exec(
       [
-        'SELECT * FROM soalition',
+        'SELECT soalition.* FROM soalition',
         'JOIN follow ON follow.soalition = soalition.id',
         'WHERE follow.author = $1'
       ].join(' '),
@@ -74,7 +74,7 @@ class Soalitions
   def one(id)
     found = @pgsql.exec(
       [
-        'SELECT * FROM soalition',
+        'SELECT soalition.* FROM soalition',
         'JOIN follow ON follow.soalition = soalition.id',
         'WHERE soalition.id = $1 AND follow.author = $2',
         'LIMIT 1'

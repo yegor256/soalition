@@ -89,4 +89,10 @@ class Soalition
       Post.new(id: r['id'], pgsql: @pgsql, hash: r)
     end
   end
+
+  def members
+    @pgsql.exec('SELECT author FROM follow WHERE soalition = $1', [@id]).map do |r|
+      r['author']
+    end
+  end
 end

@@ -27,8 +27,17 @@
       and YouTube videos.
     %input{type: 'submit', value: 'Share'}
 
+%p
+  Members:
+  - soalition.members.each_with_index do |m, i|
+    - if i > 0
+      = ', '
+    %a{href: "https://twitter.com/#{m}"}= "@#{m}"
+
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray'}
     By
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
     %a{href: p.uri}= p.uri
+    - if !p.approved?
+      = "(not approved yet)"

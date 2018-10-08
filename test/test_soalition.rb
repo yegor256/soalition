@@ -40,6 +40,15 @@ class SoalitionTest < Minitest::Test
     assert_equal(0, Inbox.new(login: friend).fetch.count)
   end
 
+  def test_lists_members
+    owner = random_author
+    soalitions = Soalitions.new(login: owner)
+    soalition = soalitions.create('hey you', '#', '-')
+    assert_equal(1, soalition.members.count)
+    Soalitions.new(login: random_author).join(soalition.id)
+    assert_equal(2, soalition.members.count)
+  end
+
   def test_counts_score
     owner = random_author
     soalition = Soalitions.new(login: owner).create('hey you', '#', '-')

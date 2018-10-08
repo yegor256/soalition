@@ -36,7 +36,7 @@ class Inbox
     [
       @pgsql.exec(
         [
-          'SELECT post.id, post.author, soalition.name FROM post',
+          'SELECT post.id, post.author, post.uri, soalition.name FROM post',
           'LEFT JOIN approve ON approve.post = post.id',
           'JOIN soalition ON post.soalition = soalition.id',
           'JOIN follow ON follow.soalition = soalition.id',
