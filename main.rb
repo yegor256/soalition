@@ -133,7 +133,7 @@ end
 get '/share' do
   haml :share, layout: :layout, locals: merged(
     title: '/share',
-    soalitions: soalitions
+    soalitions: author.soalitions
   )
 end
 
@@ -172,7 +172,8 @@ end
 get '/soalition' do
   soalition = author.soalitions.one(params[:id])
   haml :soalition, layout: :layout, locals: merged(
-    title: "##{soalition.id}"
+    title: "##{soalition.id}",
+    soalition: soalition
   )
 end
 
