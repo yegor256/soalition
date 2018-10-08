@@ -31,6 +31,7 @@ require 'sinatra/cookies'
 require 'raven'
 require 'omniauth-twitter'
 require_relative 'version'
+require_relative 'objects/tbot'
 require_relative 'objects/author'
 
 if ENV['RACK_ENV'] != 'test'
@@ -54,7 +55,8 @@ configure do
       'dbname' => 'test',
       'password' => 'test'
     },
-    'sentry' => ''
+    'sentry' => '',
+    'telegram_token' => ''
   }
   config = YAML.safe_load(File.open(File.join(File.dirname(__FILE__), 'config.yml'))) unless ENV['RACK_ENV'] == 'test'
   if ENV['RACK_ENV'] != 'test'
@@ -78,6 +80,7 @@ configure do
     user: config['pgsql']['user'],
     password: config['pgsql']['password']
   )
+  set :tbot, Tbot.new(token: config['telegram_token'], pgsql: settings.pgsql)
   use OmniAuth::Builder do
     provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']
   end
@@ -154,25 +157,30 @@ end
 get '/do-approve' do
   post = author.post(params[:id].to_i)
   post.approve(author.login)
+  settings.tbot.notify(post.author, "Your post has been approved by `@#{author.login}`: #{post.uri}")
   flash('/', "The post of @#{post.author} has been approved")
 end
 
 get '/do-reject' do
   post = author.post(params[:id].to_i)
+  uri = post.uri
   post.reject(author.login)
+  settings.tbot.notify(post.author, "Your post has been rejected by `@#{author.login}`: #{uri}")
   flash('/', "The post of @#{post.author} has been rejected")
 end
 
 get '/approve-repost' do
   post = author.post(params[:post].to_i)
-  post.reposts.approve(params[:id], author.login)
+  friend = post.reposts.approve(params[:id], author.login)
+  settings.tbot.notify(friend, "Your repost has been approved by `@#{author.login}`")
   flash('/', "The repost of the post ##{post.id} has been approved")
 end
 
 get '/reject-repost' do
   post = author.post(params[:post].to_i)
-  post.reposts.reject(params[:id], author.login)
-  flash('/', "The repost of the post ##{post.id} has been rejected")
+  friend = post.reposts.reject(params[:id], author.login)
+  settings.tbot.notify(friend, "Your repost has been rejected by `@#{author.login}`")
+  flash('/', "The repost of the post ##{post.id} has been rejected.")
 end
 
 get '/repost' do
@@ -185,7 +193,16 @@ end
 
 post '/do-repost' do
   post = author.post(params[:id].to_i)
-  post.repost(author.login, params[:uri])
+  id = post.reposts.submit(author.login, params[:uri])
+  settings.tbot.notify(
+    post.author,
+    [
+      "Your post has been reposted by `@#{author.login}`: #{post.uri};",
+      "here is the link submitted: #{params[:uri]};",
+      "please [approve](https://www.soalition.com/approve-repost?id=#{id}&post=#{post.id}) it",
+      "or [reject](https://www.soalition.com/reject-repost?id=#{id}&post=#{post.id})."
+    ].join(' ')
+  )
   flash('/', "Your contribution to the post of @#{post.author} has been submitted")
 end
 
@@ -195,6 +212,11 @@ get '/soalition' do
     title: "##{soalition.id}",
     soalition: soalition
   )
+end
+
+get '/tbot' do
+  settings.tbot.identify(author.login, params[:number])
+  flash('/', 'Thanks, now I know who you are in Telegram!')
 end
 
 get '/robots.txt' do

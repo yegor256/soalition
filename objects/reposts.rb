@@ -34,7 +34,10 @@ class Reposts
 
   def submit(friend, uri)
     raise "You can't repost your own post ##{@id}" if @post.author == friend
-    @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [friend, @post.id, uri])
+    @pgsql.exec(
+      'INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3) RETURNING id',
+      [friend, @post.id, uri]
+    )[0]['id']
   end
 
   def fetch
@@ -43,11 +46,15 @@ class Reposts
 
   def approve(id, friend)
     raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    author = @pgsql.exec('SELECT author FROM repost WHERE id = $1', [id])[0]['author']
     @pgsql.exec('UPDATE repost SET approved = true WHERE id = $1', [id])
+    author
   end
 
   def reject(id, friend)
     raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    author = @pgsql.exec('SELECT author FROM repost WHERE id = $1', [id])[0]['author']
     @pgsql.exec('DELETE FROM repost WHERE id = $1', [id])
+    author
   end
 end
