@@ -11,6 +11,10 @@
   Your score:
   %strong= soalition.score(author.login)
 
+%p
+  Join URL:
+  %a{href: "/join?id=#{soalition.id}"}= "https://www.soalition.com/join?id=#{soalition.id}"
+
 %form{method: 'POST', action: '/do-share'}
   %fieldset
     %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}

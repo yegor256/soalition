@@ -52,6 +52,14 @@ class Soalitions
     end
   end
 
+  def join(soalition)
+    id = @pgsql.exec(
+      'INSERT INTO follow (author, soalition) VALUES ($1, $2) RETURNING id',
+      [@login, soalition]
+    )
+    Soalition.new(id: id, pgsql: @pgsql)
+  end
+
   def mine
     @pgsql.exec(
       [

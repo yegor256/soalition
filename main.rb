@@ -146,6 +146,11 @@ post '/do-share' do
   flash("/soalition?id=#{soalition.id}", "Your post was shared to the soalition ##{soalition.id}")
 end
 
+get '/join' do
+  soalition = author.soalitions.join(params[:id])
+  flash("/soalition?id=#{soalition.id}", "You have successfully joined soalition ##{soalition.id}")
+end
+
 get '/do-approve' do
   post = author.post(params[:id].to_i)
   post.approve(author.login)
