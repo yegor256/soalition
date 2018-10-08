@@ -55,11 +55,19 @@ class Soalitions
   end
 
   def join(soalition)
+    raise "You are a member of the soalition ##{soalition} already" if member?(soalition)
     @pgsql.exec(
       'INSERT INTO follow (author, soalition) VALUES ($1, $2) RETURNING id',
       [@login, soalition]
     )
     Soalition.new(id: soalition, pgsql: @pgsql)
+  end
+
+  def member?(soalition)
+    !@pgsql.exec(
+      'SELECT FROM follow WHERE author = $1 AND soalition = $2 LIMIT 1',
+      [@login, soalition]
+    ).empty?
   end
 
   def mine

@@ -155,7 +155,9 @@ post '/do-share' do
 end
 
 get '/join' do
-  soalition = author.soalitions.join(params[:id])
+  id = params[:id]
+  flash("/soalition?id=#{id}", 'You are a member already') if author.soalitions.member?(id)
+  soalition = author.soalitions.join(id)
   soalition.members(admins_only: true).each do |user|
     settings.tbot.notify(user, "A new member `@#{author.login}` joined \"#{soalition.name}\"")
   end

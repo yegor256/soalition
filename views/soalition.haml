@@ -11,8 +11,14 @@
 %p
   Your score:
   %strong{class: (score.negative? ? 'red' : 'green')}= score
-  - if score.negative?
-    = "(you can't make any more posts)"
+
+- if score.negative?
+  %p
+    = succeed ':' do
+      %span.red Attention
+    You can't make any more posts, because your score is negative.
+    Try to repost the posts listed below, each repost will add +1
+    to your score.
 
 %p
   Invite your friends:
@@ -43,14 +49,16 @@
     By
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
     %a{href: p.uri}= p.uri
-    - if !p.approved?
+    - if p.approved?
       = "(not approved yet)"
+    - else
+      %a{href: "/repost?id=#{p.id}"} Repost
   %ul
     - p.reposts.fetch.each do |r|
       %li{style: (r['approved'] == 't' ? '' : 'gray')}
         = succeed ':' do
           %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        %a{href: r['uri']}= "@#{r['uri']}"
+        %a{href: r['uri']}= r['uri']
         - if r['approved'] == 'f'
           = "(pending)"
 
