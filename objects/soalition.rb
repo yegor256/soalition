@@ -54,11 +54,12 @@ class Soalition
   end
 
   def score(author)
+    days = 90
     posts = @pgsql.exec(
       [
         'SELECT COUNT(*) FROM post',
         'JOIN approve ON post.id = approve.post',
-        'WHERE soalition = $1 AND post.created > NOW() - INTERVAL \'90 DAYS\'',
+        "WHERE soalition = $1 AND post.created > NOW() - INTERVAL '#{days} DAYS'",
         'AND post.author = $2'
       ].join(' '),
       [@id, author]
@@ -68,12 +69,14 @@ class Soalition
         'SELECT COUNT(*) FROM repost',
         'JOIN post ON repost.post = post.id',
         'JOIN soalition ON post.soalition = soalition.id',
-        'WHERE soalition = $1 AND repost.created > NOW() - INTERVAL \'90 DAYS\'',
+        "WHERE soalition = $1 AND repost.created > NOW() - INTERVAL '#{days} DAYS'",
         'AND repost.author = $2 AND repost.approved = true'
       ].join(' '),
       [@id, author]
     )[0]['count'].to_i
-    (reposts - posts * size / 2).to_i
+    norma = days / 30
+    plus = norma - (posts - norma).abs
+    (reposts - plus * size).to_i
   end
 
   def share(author, uri)
