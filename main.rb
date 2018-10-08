@@ -220,7 +220,7 @@ get '/soalition' do
 end
 
 get '/tbot' do
-  settings.tbot.identify(author.login, params[:number])
+  settings.tbot.identify(author.login, params[:chat].to_i)
   flash('/', 'Thanks, now I know who you are in Telegram!')
 end
 
