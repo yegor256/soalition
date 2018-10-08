@@ -4,8 +4,6 @@ assets:
   id_rsa.pub: zerocracy/home#assets/heroku-key.pub
 install: |-
   export PATH=$PATH:/usr/lib/postgresql/9.3/bin
-  sudo rvm install 2.5.1
-  sudo rvm use 2.5.1
   sudo gem install pdd
   git config --global user.email "server@soalition.com"
   git config --global user.name "soalition.com"

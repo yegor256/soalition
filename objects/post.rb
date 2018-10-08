@@ -35,14 +35,46 @@ class Post
     @hash = hash
   end
 
+  def author
+    @hash['author'] || @pgsql.exec('SELECT author FROM post WHERE id=$1', [@id])[0]['author']
+  end
+
   def uri
-    @hash['name'] || @pgsql.exec('SELECT name FROM soalition WHERE id=$1', [@id])[0]['name']
+    @hash['uri'] || @pgsql.exec('SELECT uri FROM post WHERE id=$1', [@id])[0]['uri']
   end
 
   def approve(author)
+    raise "@#{author} can't approve post ##{@id}" unless allowed(author)
     @pgsql.exec(
       'INSERT INTO approve (post, author) VALUES ($1, $2) RETURNING id',
       [@id, author]
     )
+  end
+
+  def reject(author)
+    raise "@#{author} can't reject post ##{@id}" unless allowed(author)
+    @pgsql.exec('DELETE FROM post WHERE id = $1', [@id])
+  end
+
+  def approved?
+    !@pgsql.exec('SELECT FROM approve WHERE post = $1 LIMIT 1', [@id]).empty?
+  end
+
+  def repost(author, uri)
+    @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [author, @id, uri])
+  end
+
+  private
+
+  def allowed(author)
+    !@pgsql.exec(
+      [
+        'SELECT FROM follow',
+        'JOIN soalition ON follow.soalition = soalition.id',
+        'JOIN post ON post.soalition = soalition.id',
+        'WHERE follow.author = $1 AND post.id = $2'
+      ].join(' '),
+      [author, @id]
+    ).empty?
   end
 end

@@ -1,0 +1,14 @@
+%h2
+  Repost
+
+%p
+  Please, repost it.
+
+%p
+  = post.uri
+
+%form{method: 'POST', action: '/do-repost'}
+  %fieldset
+    %input{type: 'hidden', name: 'id', id: 'id', value: post.id}
+    %input{type: 'url', name: 'uri', size: 40, autocomplete: 'off'}
+    %input{type: 'submit', value: 'Submit'}

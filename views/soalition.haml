@@ -1,0 +1,13 @@
+%h2
+  &= soalition.name
+
+%form{method: 'POST', action: '/do-share'}
+  %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
+  %input{type: 'uri', name: 'uri', id: 'uri', autofocus: 'true', size: 30, required: 'true', autocomplete: 'off'}
+  %input{type: 'submit', value: 'Share'}
+
+- soalition.posts.each do |p|
+  %p{class: p.approved? ? '' : 'gray'}
+    By
+    %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
+    %a{href: p.uri}= p.uri

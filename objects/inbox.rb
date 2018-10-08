@@ -48,7 +48,7 @@ class Inbox
           "New post shared by [@#{r['author']}](https://twitter.com/#{r['author']})",
           "in \"#{r['name']}\"",
           "requires your approval: #{r['uri']};",
-          "please, [approve](/approve?post=#{r['id']}) or [reject](/reject?post=#{r['id']})."
+          "please, [approve](/do-approve?id=#{r['id']}) or [reject](/do-reject?id=#{r['id']})."
         ].join(' ')
       end,
       @pgsql.exec(
@@ -65,7 +65,7 @@ class Inbox
         [
           "A new post has been just shared by [@#{r['author']}](https://twitter.com/#{r['author']}),",
           "they ask you to re-post, comment, or like it: #{r['uri']};",
-          "please, [click here](/repost?post=#{r['id']}) when done."
+          "please, [click here](/repost?id=#{r['id']}) when done."
         ].join(' ')
       end
     ].flatten

@@ -24,6 +24,7 @@ STDOUT.sync = true
 
 require 'time'
 require 'haml'
+require 'redcarpet'
 require 'json'
 require 'sinatra'
 require 'sinatra/cookies'
@@ -125,7 +126,40 @@ get '/create' do
 end
 
 post '/do-create' do
-  author.soalitions.create(params[:name], params[:icon], params[:description])
+  soalition = author.soalitions.create(params[:name], params[:icon], params[:description])
+  flash('/share', "A new soalition ##{soalition.id} has been created")
+end
+
+post '/do-share' do
+  soalition = author.soalitions.one(params[:id])
+  soalition.share(current_author, params[:uri])
+  flash("/soalition?id=#{soalition.id}", "Your post was shared to the soalition ##{soalition.id}")
+end
+
+get '/do-approve' do
+  post = author.post(params[:id].to_i)
+  post.approve(current_author)
+  flash('/', "The post of @#{post.author} has been approved")
+end
+
+get '/do-reject' do
+  post = author.post(params[:id].to_i)
+  post.reject(current_author)
+  flash('/', "The post of @#{post.author} has been rejected")
+end
+
+get '/repost' do
+  post = author.post(params[:id].to_i)
+  haml :repost, layout: :layout, locals: merged(
+    title: '/repost',
+    post: post
+  )
+end
+
+get '/do-repost' do
+  post = author.post(params[:id].to_i)
+  post.repost(current_author, params[:uri])
+  flash('/', "Your contribution to the post of @#{post.author} has been submitted")
 end
 
 get '/robots.txt' do

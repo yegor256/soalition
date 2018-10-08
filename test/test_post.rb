@@ -14,36 +14,44 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
-require_relative 'inbox'
-require_relative 'soalitions'
-require_relative 'post'
+require 'minitest/autorun'
+require_relative 'test__helper'
+require_relative '../objects/soalitions'
 
-# Author.
-# Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
-# License:: MIT
-class Author
-  def initialize(login:, pgsql: Pgsql::TEST)
-    @login = login
-    @pgsql = pgsql
+class PostTest < Minitest::Test
+  def test_shares_post
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    post = soalition.share(random_author, '#')
+    assert(!post.approved?)
+    assert_raises do
+      post.approve('stranger')
+    end
+    post.approve(owner)
+    assert(post.approved?)
   end
 
-  def inbox
-    Inbox.new(login: @login, pgsql: @pgsql)
+  def test_rejects_post
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    post = soalition.share(random_author, '#')
+    assert(!post.approved?)
+    assert_raises do
+      post.reject('stranger')
+    end
+    post.reject(owner)
   end
 
-  def soalitions
-    Soalitions.new(login: @login, pgsql: @pgsql)
-  end
-
-  def post(id)
-    Post.new(id: id, pgsql: @pgsql)
+  def test_adds_reposts
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
+    post = soalition.share(random_author, '#')
+    post.repost(random_author, '#')
   end
 end
