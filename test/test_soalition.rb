@@ -57,4 +57,15 @@ class SoalitionTest < Minitest::Test
     post.approve(owner)
     assert_equal(-1, soalition.score(friend))
   end
+
+  def test_joins_and_quits
+    owner = random_author
+    soalitions = Soalitions.new(login: owner)
+    soalition = soalitions.create('hey you', '#', '-')
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    assert_equal(2, soalition.members.count)
+    soalition.quit(friend)
+    assert_equal(1, soalition.members.count)
+  end
 end

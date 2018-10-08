@@ -53,3 +53,6 @@
         %a{href: r['uri']}= "@#{r['uri']}"
         - if r['approved'] == 'f'
           = "(pending)"
+
+%p
+  %a.red{href: "/quit?id=#{soalition.id}", onclick: "return confirm('Are you sure?');"} Quit

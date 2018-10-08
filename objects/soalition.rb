@@ -91,8 +91,13 @@ class Soalition
     end
   end
 
-  def members
-    @pgsql.exec('SELECT author FROM follow WHERE soalition = $1', [@id]).map do |r|
+  def quit(friend)
+    @pgsql.exec('DELETE FROM follow WHERE soalition = $1 AND author = $2', [@id, friend])
+  end
+
+  def members(admins_only: false)
+    q = 'SELECT author FROM follow WHERE soalition = $1' + (admins_only ? ' AND admin = true' : '')
+    @pgsql.exec(q, [@id]).map do |r|
       r['author']
     end
   end

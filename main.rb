@@ -156,6 +156,9 @@ end
 
 get '/join' do
   soalition = author.soalitions.join(params[:id])
+  soalition.members(admins_only: true).each do |user|
+    settings.tbot.notify(user, "A new member `@#{author.login}` joined \"#{soalition.name}\"")
+  end
   flash("/soalition?id=#{soalition.id}", "You have successfully joined soalition ##{soalition.id}")
 end
 
@@ -217,6 +220,12 @@ get '/soalition' do
     title: "##{soalition.id}",
     soalition: soalition
   )
+end
+
+get '/quit' do
+  soalition = author.soalitions.one(params[:id])
+  soalition.quit(author.login)
+  flash('/', 'You are out, we are sorry :(')
 end
 
 get '/tbot' do
