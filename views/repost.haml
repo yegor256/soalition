@@ -2,13 +2,36 @@
   Repost
 
 %p
-  Please, repost it.
-
-%p
-  = post.uri
+  %a{href: "https://twitter.com/#{post.author}"}= "@#{post.author}"
+  asks you to repost this:
+  %a{href: post.uri}= post.uri
 
 %form{method: 'POST', action: '/do-repost'}
   %fieldset
     %input{type: 'hidden', name: 'id', id: 'id', value: post.id}
-    %input{type: 'url', name: 'uri', size: 40, autocomplete: 'off'}
+    %label
+      The URL of your repost:
+    %input{type: 'url', name: 'uri', size: 60, autocomplete: 'off'}
+    %label.small.gray
+      You may re-tweet the original article, share it on Facebook,
+      post a comment to it, or do something similar, which will
+      attract readers to it.
     %input{type: 'submit', value: 'Submit'}
+
+- reposts = post.reposts.fetch
+- if reposts.empty?
+  %p
+    You will be the first, it was not reposted yet.
+- else
+  %p
+    It was already reposted
+    = reposts.count
+    times:
+  %ul
+    - reposts.each do |r|
+      %li{style: (r['approved'] == 't' ? '' : 'gray')}
+        = succeed ':' do
+          %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+        %a{href: r['uri']}= r['uri']
+        - if r['approved'] == 'f'
+          = "(pending)"
