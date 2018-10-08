@@ -173,7 +173,7 @@ end
 get '/do-approve' do
   post = author.post(params[:id].to_i)
   post.approve(author.login)
-  settings.tbot.notify(post.author, "Your post has been approved by `@#{author.login}`: #{post.uri}")
+  settings.tbot.notify(post.author, "Your [post](#{post.uri}) has been approved by `@#{author.login}`.")
   flash('/', "The post of @#{post.author} has been approved")
 end
 
@@ -181,26 +181,33 @@ get '/do-reject' do
   post = author.post(params[:id].to_i)
   uri = post.uri
   post.reject(author.login)
-  settings.tbot.notify(post.author, "Your post has been rejected by `@#{author.login}`: #{uri}")
+  settings.tbot.notify(post.author, "Your [post](#{uri}) has been rejected by `@#{author.login}`.")
   flash('/', "The post of @#{post.author} has been rejected")
 end
 
 get '/approve-repost' do
   post = author.post(params[:post].to_i)
   friend = post.reposts.approve(params[:id], author.login)
-  settings.tbot.notify(friend, "Your repost has been approved by `@#{author.login}`")
+  settings.tbot.notify(
+    friend,
+    "Your repost of [this post](#{post.uri}) has been approved by `@#{author.login}`."
+  )
   flash('/', "The repost of the post ##{post.id} has been approved")
 end
 
 get '/reject-repost' do
   post = author.post(params[:post].to_i)
   friend = post.reposts.reject(params[:id], author.login)
-  settings.tbot.notify(friend, "Your repost has been rejected by `@#{author.login}`")
+  settings.tbot.notify(
+    friend,
+    "Your repost of [this post](#{post.uri}) has been rejected by `@#{author.login}`."
+  )
   flash('/', "The repost of the post ##{post.id} has been rejected.")
 end
 
 get '/repost' do
   post = author.post(params[:id].to_i)
+  raise 'You can\'t repost your own post' if post.author == author.login
   haml :repost, layout: :layout, locals: merged(
     title: '/repost',
     post: post
@@ -209,12 +216,13 @@ end
 
 post '/do-repost' do
   post = author.post(params[:id].to_i)
+  raise 'You can\'t repost your own post' if post.author == author.login
   id = post.reposts.submit(author.login, params[:uri])
   settings.tbot.notify(
     post.author,
     [
-      "Your post has been reposted by `@#{author.login}`: #{post.uri};",
-      "here is the link submitted: #{params[:uri]};",
+      "Your [post](#{post.uri}) has been reposted by `@#{author.login}`",
+      "[here](#{params[:uri]}),",
       "please [approve](https://www.soalition.com/approve-repost?id=#{id}&post=#{post.id}) it",
       "or [reject](https://www.soalition.com/reject-repost?id=#{id}&post=#{post.id})."
     ].join(' ')
