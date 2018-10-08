@@ -7,25 +7,29 @@
 %p
   &= soalition.description
 
+- score = soalition.score(author.login)
 %p
   Your score:
-  %strong= soalition.score(author.login)
+  %strong{class: (score.negative? ? 'red' : 'green')}= score
+  - if score.negative?
+    = "(you can't make any more posts)"
 
 %p
   Invite your friends:
   %a{href: "/join?id=#{soalition.id}"}= "https://www.soalition.com/join?id=#{soalition.id}"
 
-%form{method: 'POST', action: '/do-share'}
-  %fieldset
-    %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
-    %label URL of the blog post:
-    %input{type: 'url', name: 'uri', id: 'uri', autofocus: 'true', size: 50, required: 'true', autocomplete: 'off'}
-    %label.small.gray
-      Make sure the content you share is publicly accessible
-      by everyone in this soalition and is relevant to its main topic.
-      The most popular content is: blog posts, Tweets, Facebook posts,
-      and YouTube videos.
-    %input{type: 'submit', value: 'Share'}
+- if score.positive?
+  %form{method: 'POST', action: '/do-share'}
+    %fieldset
+      %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
+      %label URL of the blog post:
+      %input{type: 'url', name: 'uri', id: 'uri', autofocus: 'true', size: 50, required: 'true', autocomplete: 'off'}
+      %label.small.gray
+        Make sure the content you share is publicly accessible
+        by everyone in this soalition and is relevant to its main topic.
+        The most popular content is: blog posts, Tweets, Facebook posts,
+        and YouTube videos.
+      %input{type: 'submit', value: 'Share'}
 
 %p
   Members:
