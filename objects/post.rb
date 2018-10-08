@@ -65,6 +65,10 @@ class Post
     @pgsql.exec('INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3)', [friend, @id, uri])
   end
 
+  def reposts
+    @pgsql.exec('SELECT * FROM repost WHERE post = $1', [@id])
+  end
+
   private
 
   def allowed(author)
