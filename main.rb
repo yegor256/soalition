@@ -130,6 +130,13 @@ post '/do-create' do
   flash('/share', "A new soalition ##{soalition.id} has been created")
 end
 
+get '/share' do
+  haml :share, layout: :layout, locals: merged(
+    title: '/share',
+    soalitions: soalitions
+  )
+end
+
 post '/do-share' do
   soalition = author.soalitions.one(params[:id])
   soalition.share(current_author, params[:uri])
@@ -160,6 +167,13 @@ get '/do-repost' do
   post = author.post(params[:id].to_i)
   post.repost(current_author, params[:uri])
   flash('/', "Your contribution to the post of @#{post.author} has been submitted")
+end
+
+get '/soalition' do
+  soalition = author.soalitions.one(params[:id])
+  haml :soalition, layout: :layout, locals: merged(
+    title: "##{soalition.id}"
+  )
 end
 
 get '/robots.txt' do
