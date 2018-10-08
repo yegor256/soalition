@@ -79,4 +79,10 @@ class Soalition
     )[0]['id'].to_i
     Post.new(id: id, pgsql: @pgsql)
   end
+
+  def posts
+    @pgsql.exec('SELECT FROM post WHERE soalition = $1', [@id]).map do |r|
+      Post.new(id: r['id'], pgsql: @pgsql, hash: r)
+    end
+  end
 end
