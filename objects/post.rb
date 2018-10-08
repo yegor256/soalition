@@ -22,6 +22,7 @@
 
 require_relative 'pgsql'
 require_relative 'reposts'
+require_relative 'soalition'
 
 # Post.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -63,6 +64,11 @@ class Post
 
   def reposts
     Reposts.new(post: self, pgsql: @pgsql)
+  end
+
+  def soalition
+    id = @pgsql.exec('SELECT soalition FROM post WHERE id = $1 LIMIT 1', [@id])[0]['soalition'].to_i
+    Soalition.new(id: id, pgsql: @pgsql)
   end
 
   private

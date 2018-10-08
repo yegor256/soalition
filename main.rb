@@ -213,7 +213,10 @@ post '/do-repost' do
       "or [reject](https://www.soalition.com/reject-repost?id=#{id}&post=#{post.id})."
     ].join(' ')
   )
-  flash('/', "Your contribution to the post of @#{post.author} has been submitted")
+  flash(
+    "/soalition?id=#{post.soalition.id}",
+    "Your contribution to the post of @#{post.author} has been submitted"
+  )
 end
 
 get '/soalition' do

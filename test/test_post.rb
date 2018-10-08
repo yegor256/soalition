@@ -59,4 +59,12 @@ class PostTest < Minitest::Test
     post.reposts.submit(random_author, uri)
     assert_equal(1, post.reposts.fetch.count)
   end
+
+  def test_extracts_soalition
+    owner = random_author
+    uri = 'https://www.google.com'
+    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    post = soalition.share(random_author, uri)
+    assert_equal(soalition.id, post.soalition.id)
+  end
 end
