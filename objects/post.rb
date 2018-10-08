@@ -21,13 +21,12 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
-require_relative 'post'
 
-# Soalition.
+# Post.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
 # Copyright:: Copyright (c) 2018 Yegor Bugayenko
 # License:: MIT
-class Soalition
+class Post
   attr_reader :id
 
   def initialize(id:, pgsql: Pgsql::TEST, hash: {})
@@ -36,19 +35,14 @@ class Soalition
     @hash = hash
   end
 
-  def name
+  def uri
     @hash['name'] || @pgsql.exec('SELECT name FROM soalition WHERE id=$1', [@id])[0]['name']
   end
 
-  def description
-    @hash['description'] || @pgsql.exec('SELECT description FROM soalition WHERE id=$1', [@id])[0]['description']
-  end
-
-  def share(author, uri)
-    id = @pgsql.exec(
-      'INSERT INTO post (author, soalition, uri) VALUES ($1, $2, $3) RETURNING id',
-      [author, @id, uri]
-    )[0]['id'].to_i
-    Post.new(id: id, pgsql: @pgsql)
+  def approve(author)
+    @pgsql.exec(
+      'INSERT INTO approve (post, author) VALUES ($1, $2) RETURNING id',
+      [@id, author]
+    )
   end
 end

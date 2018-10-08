@@ -33,16 +33,42 @@ class Inbox
   end
 
   def fetch
-    @pgsql.exec(
-      [
-        'SELECT * FROM post',
-        'JOIN soalition ON post.soalition = soalition.id',
-        'JOIN follow ON follow.soalition = soalition.id',
-        'LEFT JOIN repost ON repost.post = post.id AND repost.author = $1',
-        'WHERE follow.author = $1 AND repost.id IS NULL'
-      ].join(' '),
-      [@login]
-    )
+    [
+      @pgsql.exec(
+        [
+          'SELECT post.id, post.author, soalition.name FROM post',
+          'LEFT JOIN approve ON approve.post = post.id',
+          'JOIN soalition ON post.soalition = soalition.id',
+          'JOIN follow ON follow.soalition = soalition.id',
+          'WHERE follow.author = $1 AND follow.admin = true and approve.id IS NULL'
+        ].join(' '),
+        [@login]
+      ).map do |r|
+        [
+          "New post shared by [@#{r['author']}](https://twitter.com/#{r['author']})",
+          "in \"#{r['name']}\"",
+          "requires your approval: #{r['uri']};",
+          "please, [approve](/approve?post=#{r['id']}) or [reject](/reject?post=#{r['id']})."
+        ].join(' ')
+      end,
+      @pgsql.exec(
+        [
+          'SELECT post.uri, post.author FROM post',
+          'JOIN approve ON approve.post = post.id',
+          'JOIN soalition ON post.soalition = soalition.id',
+          'JOIN follow ON follow.soalition = soalition.id',
+          'LEFT JOIN repost ON repost.post = post.id AND repost.author = $1',
+          'WHERE follow.author = $1 AND repost.id IS NULL'
+        ].join(' '),
+        [@login]
+      ).map do |r|
+        [
+          "A new post has been just shared by [@#{r['author']}](https://twitter.com/#{r['author']}),",
+          "they ask you to re-post, comment, or like it: #{r['uri']};",
+          "please, [click here](/repost?post=#{r['id']}) when done."
+        ].join(' ')
+      end
+    ].flatten
   end
 
   def respond

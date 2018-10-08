@@ -29,7 +29,12 @@ class SoalitionTest < Minitest::Test
   def test_shares_post
     owner = random_author
     soalition = Soalitions.new(login: owner).create('hey you', '#', '-')
-    soalition.share(random_author, '#')
+    friend = random_author
+    post = soalition.share(friend, '#')
     assert_equal(1, Inbox.new(login: owner).fetch.count)
+    assert_equal(0, Inbox.new(login: friend).fetch.count)
+    post.approve(owner)
+    assert_equal(1, Inbox.new(login: owner).fetch.count)
+    assert_equal(0, Inbox.new(login: friend).fetch.count)
   end
 end

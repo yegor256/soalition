@@ -60,7 +60,7 @@ class Soalitions
         'WHERE follow.author = $1'
       ].join(' '),
       [@login]
-    ).map { |r| Soalition.new(id: r['id'], pgsql: @pgsql) }
+    ).map { |r| Soalition.new(id: r['id'], pgsql: @pgsql, hash: r) }
   end
 
   def one(id)
@@ -74,6 +74,6 @@ class Soalitions
       [id, @login]
     )
     raise "Soalition ##{id} not found for @#{@login}" if found.empty?
-    Soalition.new(id: found[0]['id'], pgsql: @pgsql)
+    Soalition.new(id: found[0]['id'], pgsql: @pgsql, hash: found[0])
   end
 end

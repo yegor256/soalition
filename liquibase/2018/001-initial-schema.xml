@@ -40,7 +40,9 @@ SOFTWARE.
         soalition INTEGER NOT NULL REFERENCES soalition(id),
         admin BOOLEAN DEFAULT false NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
-      )
+      );
+      CREATE INDEX follow_1 ON follow (author);
+      CREATE INDEX follow_2 ON follow (soalition);
     </sql>
     <sql>
       CREATE TABLE "post" (
@@ -49,7 +51,10 @@ SOFTWARE.
         soalition INTEGER NOT NULL REFERENCES soalition(id),
         uri TEXT NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
-      )
+      );
+      CREATE INDEX post_1 ON post (author);
+      CREATE INDEX post_2 ON post (soalition);
+      CREATE INDEX post_3 ON post (created);
     </sql>
     <sql>
       CREATE TABLE "approve" (
@@ -57,7 +62,10 @@ SOFTWARE.
         author VARCHAR(32) NOT NULL,
         post INTEGER NOT NULL REFERENCES post(id),
         created TIMESTAMP DEFAULT now() NOT NULL
-      )
+      );
+      CREATE INDEX approve_1 ON approve (author);
+      CREATE INDEX approve_2 ON approve (post);
+      CREATE INDEX approve_3 ON approve (created);
     </sql>
     <sql>
       CREATE TABLE "repost" (
@@ -67,7 +75,10 @@ SOFTWARE.
         approved BOOLEAN DEFAULT false NOT NULL,
         uri TEXT NOT NULL,
         created TIMESTAMP DEFAULT now() NOT NULL
-      )
+      );
+      CREATE INDEX repost_1 ON repost (author);
+      CREATE INDEX repost_2 ON repost (post);
+      CREATE INDEX repost_3 ON repost (created);
     </sql>
   </changeSet>
 </databaseChangeLog>
