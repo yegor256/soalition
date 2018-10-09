@@ -12,3 +12,23 @@
 
 It's a social coalition management web app for online writers.
 
+Each _soalition_ (social coalition) is a group of Internet writers interested
+in helping each other promote the same idea. They all write regularly
+and want others in the group to share their content. In exchange they
+are willing to share their content too.
+
+Everybody has a _score_ inside a soalition, which is calculated by
+the formula (see method `score()`
+in [`soalition.rb`](https://github.com/yegor256/soalition/blob/master/objects/soalition.rb)):
+
+S = R - (3 - |P - 3|) x M
+
+Here, _R_ is the number of reposts a member of the group did in the last
+90 days, _P_ is the number of posts a member shared with the group in the
+same period of time, and _M_ is the number of members currently in the group.
+
+The formula conveys the idea that each repost is a positive contribution,
+while only the first three posts are positive. All other posts, which go above
+the first three lower the score. In other words, to keep the score positive
+a member of the group has to post once a month and repost all content
+shared by other members.
