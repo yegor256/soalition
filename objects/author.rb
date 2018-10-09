@@ -46,6 +46,8 @@ class Author
   end
 
   def post(id)
+    raise "Post Id must be a number: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    raise "Post Id must be positive: #{id}" unless id.positive?
     Post.new(id: id, pgsql: @pgsql)
   end
 end

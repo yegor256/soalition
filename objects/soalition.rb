@@ -32,6 +32,8 @@ class Soalition
   attr_reader :id
 
   def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+    raise "Soalition Id must be a number: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    raise "Soalition Id must be positive: #{id}" unless id.positive?
     @id = id
     @pgsql = pgsql
     @hash = hash
@@ -92,7 +94,7 @@ class Soalition
 
   def posts
     @pgsql.exec('SELECT * FROM post WHERE soalition = $1 LIMIT 50', [@id]).map do |r|
-      Post.new(id: r['id'], pgsql: @pgsql, hash: r)
+      Post.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
 

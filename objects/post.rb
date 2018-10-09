@@ -32,6 +32,8 @@ class Post
   attr_reader :id
 
   def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+    raise "Post Id must be a number: #{id} (#{id.class.name})" unless id.is_a?(Integer)
+    raise "Post Id must be positive: #{id}" unless id.positive?
     @id = id
     @pgsql = pgsql
     @hash = hash
