@@ -30,8 +30,10 @@ class AuthorTest < Minitest::Test
     owner = random_author
     uri = 'https://www.google.com'
     soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
-    id = soalition.share(random_author, uri).id
+    friend = random_author
+    id = soalition.share(friend, uri).id
     post = Author.new(login: owner).post(id)
     assert_equal(uri, post.uri)
+    assert_equal(friend, post.author)
   end
 end

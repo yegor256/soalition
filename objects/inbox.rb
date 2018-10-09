@@ -48,7 +48,7 @@ class Inbox
       ).map do |r|
         [
           "New post shared by [@#{r['author']}](https://twitter.com/#{r['author']})",
-          "in [#{r['name']}](/soalition?id=r['soalition_id'])",
+          "in [#{r['name']}](/soalition?id=#{r['soalition_id']})",
           "requires your approval: [`#{r['uri']}`](#{r['uri']});",
           "please, [approve](/do-approve?id=#{r['id']}) or [reject](/do-reject?id=#{r['id']})."
         ].join(' ')
