@@ -65,7 +65,7 @@ class Soalitions
 
   def member?(soalition)
     !@pgsql.exec(
-      'SELECT FROM follow WHERE author = $1 AND soalition = $2 LIMIT 1',
+      'SELECT * FROM follow WHERE author = $1 AND soalition = $2 LIMIT 1',
       [@login, soalition]
     ).empty?
   end
