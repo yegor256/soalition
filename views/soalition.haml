@@ -10,7 +10,7 @@
 - score = soalition.score(author.login)
 %p
   Your score:
-  %strong{class: (score.negative? ? 'red' : 'green')}= score
+  %strong{class: (score.negative? ? 'red' : 'green')}= sprintf('%+d', score)
 
 - if score.negative?
   %p
@@ -47,6 +47,9 @@
       = ', '
     %a{href: "https://twitter.com/#{m}"}
       &= "@#{m}"
+    - s = soalition.score(m)
+    %span{class: s.negative? ? 'red' : 'green'}
+      = "(#{sprintf('%+d', s)})"
 
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
