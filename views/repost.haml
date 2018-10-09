@@ -2,9 +2,11 @@
   Repost
 
 %p
-  %a{href: "https://twitter.com/#{post.author}"}= "@#{post.author}"
+  %a{href: "https://twitter.com/#{post.author}"}
+    &= "@#{post.author}"
   asks you to repost this:
-  %a{href: post.uri}= post.uri
+  %a{href: post.uri}
+    &= post.uri
 
 %form{method: 'POST', action: '/do-repost'}
   %fieldset
@@ -31,7 +33,8 @@
     - reposts.each do |r|
       %li{style: (r['approved'] == 't' ? '' : 'gray')}
         = succeed ':' do
-          %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+          %a{href: "https://twitter.com/#{r['author']}"}
+            &= "@#{r['author']}"
         %a{href: r['uri']}
           &= r['uri']
         - if r['approved'] == 'f'

@@ -22,7 +22,8 @@
 
 %p
   Invite your friends:
-  %a{href: "/join?id=#{soalition.id}"}= "https://www.soalition.com/join?id=#{soalition.id}"
+  %a{href: "/join?id=#{soalition.id}"}
+    = "https://www.soalition.com/join?id=#{soalition.id}"
 
 - if score.positive? || score.zero?
   %form{method: 'POST', action: '/do-share'}
@@ -44,7 +45,8 @@
   - members.each_with_index do |m, i|
     - if i > 0
       = ', '
-    %a{href: "https://twitter.com/#{m}"}= "@#{m}"
+    %a{href: "https://twitter.com/#{m}"}
+      &= "@#{m}"
 
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
