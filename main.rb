@@ -150,7 +150,18 @@ end
 
 post '/do-share' do
   soalition = author.soalitions.one(params[:id])
-  soalition.share(author.login, params[:uri])
+  post = soalition.share(author.login, params[:uri])
+  soalition.members(admins_only: true).each do |user|
+    settings.tbot.notify(
+      user,
+      [
+        "A [new post](#{post.uri}) has been shared by `@#{author.login}` in",
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}),",
+        "you may want to [approve](https://www.soalition.com/do-approve?id=#{post.id})",
+        "or [reject](https://www.soalition.com/do-reject?id=#{post.id}) it."
+      ].join(' ')
+    )
+  end
   flash("/soalition?id=#{soalition.id}", "Your post was shared to the soalition ##{soalition.id}")
 end
 
@@ -173,34 +184,66 @@ end
 get '/do-approve' do
   post = author.post(params[:id].to_i)
   post.approve(author.login)
-  settings.tbot.notify(post.author, "Your [post](#{post.uri}) has been approved by `@#{author.login}`.")
+  settings.tbot.notify(
+    post.author,
+    [
+      "Your [post](#{post.uri}) has been approved by `@#{author.login}` in",
+      "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+    ].join(' ')
+  )
+  soalition.members.each do |user|
+    settings.tbot.notify(
+      user,
+      [
+        "A [new post](#{post.uri}) has been shared by `@#{author.login}` in",
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}),",
+        "you may want to [re-post](https://www.soalition.com/repost?id=#{post.id}) it",
+        'and earn a rew reputation points.'
+      ].join(' ')
+    )
+  end
   flash('/', "The post of @#{post.author} has been approved")
 end
 
 get '/do-reject' do
   post = author.post(params[:id].to_i)
+  soalition = post.soalition
   uri = post.uri
   post.reject(author.login)
-  settings.tbot.notify(post.author, "Your [post](#{uri}) has been rejected by `@#{author.login}`.")
+  settings.tbot.notify(
+    post.author,
+    [
+      "Your [post](#{uri}) has been rejected by `@#{author.login}` in",
+      "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+    ].join(' ')
+  )
   flash('/', "The post of @#{post.author} has been rejected")
 end
 
 get '/approve-repost' do
   post = author.post(params[:post].to_i)
+  soalition = post.soalition
   friend = post.reposts.approve(params[:id], author.login)
   settings.tbot.notify(
     friend,
-    "Your repost of [this post](#{post.uri}) has been approved by `@#{author.login}`."
+    [
+      "Your repost of [this post](#{post.uri}) has been approved by `@#{author.login}` in",
+      "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+    ].join(' ')
   )
   flash('/', "The repost of the post ##{post.id} has been approved")
 end
 
 get '/reject-repost' do
   post = author.post(params[:post].to_i)
+  soalition = post.soalition
   friend = post.reposts.reject(params[:id], author.login)
   settings.tbot.notify(
     friend,
-    "Your repost of [this post](#{post.uri}) has been rejected by `@#{author.login}`."
+    [
+      "Your repost of [this post](#{post.uri}) has been rejected by `@#{author.login}` in",
+      "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+    ].join(' ')
   )
   flash('/', "The repost of the post ##{post.id} has been rejected.")
 end
@@ -223,8 +266,8 @@ post '/do-repost' do
     [
       "Your [post](#{post.uri}) has been reposted by `@#{author.login}`",
       "[here](#{params[:uri]}),",
-      "please [approve](https://www.soalition.com/approve-repost?id=#{id}&post=#{post.id}) it",
-      "or [reject](https://www.soalition.com/reject-repost?id=#{id}&post=#{post.id})."
+      "please [approve](https://www.soalition.com/approve-repost?id=#{id}&post=#{post.id})",
+      "or [reject](https://www.soalition.com/reject-repost?id=#{id}&post=#{post.id}) it."
     ].join(' ')
   )
   flash(
@@ -248,7 +291,7 @@ get '/quit' do
     settings.tbot.notify(
       user,
       [
-        "A member `@#{author.login}` quit",
+        "A member `@#{author.login}` just quit",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
       ].join(' ')
     )
