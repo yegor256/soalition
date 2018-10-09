@@ -50,7 +50,8 @@
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
     By
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
-    %a{href: p.uri}= p.uri
+    %a{href: p.uri}
+      &= p.uri
     - if p.approved?
       - if p.author != author.login
         %a{href: "/repost?id=#{p.id}"} Repost
@@ -61,7 +62,8 @@
       %li{style: (r['approved'] == 't' ? '' : 'gray')}
         = succeed ':' do
           %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        %a{href: r['uri']}= r['uri']
+        %a{href: r['uri']}
+          &= r['uri']
         - if r['approved'] == 'f'
           = "(pending)"
 
