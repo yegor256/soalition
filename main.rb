@@ -209,7 +209,6 @@ get '/do-reject' do
   post = author.post(params[:id].to_i)
   soalition = post.soalition
   uri = post.uri
-  post.reject(author.login)
   settings.tbot.notify(
     post.author,
     [
@@ -217,7 +216,9 @@ get '/do-reject' do
       "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
     ].join(' ')
   )
-  flash('/', "The post of @#{post.author} has been rejected")
+  owner = post.author
+  post.reject(author.login)
+  flash('/', "The post of @#{owner} has been rejected")
 end
 
 get '/approve-repost' do

@@ -40,11 +40,11 @@ class Post
   end
 
   def author
-    @hash['author'] || @pgsql.exec('SELECT author FROM post WHERE id=$1', [@id])[0]['author']
+    @hash['author'] || @pgsql.exec('SELECT author FROM post WHERE id = $1', [@id])[0]['author']
   end
 
   def uri
-    @hash['uri'] || @pgsql.exec('SELECT uri FROM post WHERE id=$1', [@id])[0]['uri']
+    @hash['uri'] || @pgsql.exec('SELECT uri FROM post WHERE id = $1', [@id])[0]['uri']
   end
 
   def approve(author)
