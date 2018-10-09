@@ -16,4 +16,4 @@
     %br
     Score:
     - score = s.score(author.login)
-    %strong{class: (score.negative? ? 'red' : 'green')}= score
+    %strong{class: (score.negative? ? 'red' : 'green')}= sprintf('%+d', score)

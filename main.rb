@@ -184,6 +184,7 @@ end
 get '/do-approve' do
   post = author.post(params[:id].to_i)
   post.approve(author.login)
+  soalition = post.soalition
   settings.tbot.notify(
     post.author,
     [
