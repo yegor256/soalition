@@ -21,7 +21,7 @@ Everybody has a _score_ inside a soalition, which is calculated by
 the formula (see method `score()`
 in [`soalition.rb`](https://github.com/yegor256/soalition/blob/master/objects/soalition.rb)):
 
-S = R - (3 - |P - 3|) x M
+S = R + (3 - |P - 3|) x M
 
 Here, _R_ is the number of reposts a member of the group did in the last
 90 days, _P_ is the number of posts a member shared with the group in the

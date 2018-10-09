@@ -78,7 +78,7 @@ class Soalition
     )[0]['count'].to_i
     norma = days / 30
     plus = norma - (posts - norma).abs
-    (reposts - plus * size).to_i
+    (reposts + plus * size).to_i
   end
 
   def share(author, uri)
