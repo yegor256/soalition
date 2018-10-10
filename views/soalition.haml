@@ -53,15 +53,17 @@
 
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
-    By
+    = "##{p.id}"
+    by
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
-    %a{href: p.uri}<
-      &= p.uri
     - if p.approved?
       - if p.author != author.login
         %a{href: "/repost?id=#{p.id}"} Repost
     - else
       = "(not approved yet)"
+    %br
+    %a{href: p.uri}<
+      &= p.uri
   %ul
     - p.reposts.fetch.each do |r|
       %li{style: (r['approved'] == 't' ? '' : 'gray')}

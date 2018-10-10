@@ -89,7 +89,7 @@ class Soalition
       'ORDER BY score DESC'
     ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
-      { login: r['author'], telegram: !r['tchat'].nil?, score: r['score'].to_i }
+      { login: r['author'], telegram: !r['number'].nil?, score: r['score'].to_i }
     end
   end
 
