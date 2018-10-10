@@ -66,8 +66,14 @@
       %li{style: (r['approved'] == 't' ? '' : 'gray')}
         = succeed ':' do
           %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        %a{href: r['uri']}<
-          &= r['uri']
+        - uri = URI(r['uri'])
+        %a{href: uri}<
+          &= uri.host
+          - if uri.path.length > 32
+            = '...'
+            &= uri.path[-32]
+          - else
+            = uri.path
         - if r['approved'] == 'f'
           = "(pending)"
 
