@@ -85,7 +85,8 @@ class Soalition
       "SELECT follow.author, tchat.number, (#{score_query('follow.author')}) AS score FROM follow",
       'LEFT JOIN tchat ON tchat.author = follow.author',
       'WHERE soalition = $1',
-      admins_only ? ' AND admin = true' : ''
+      admins_only ? ' AND admin = true' : '',
+      'ORDER BY score DESC'
     ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
       { login: r['author'], telegram: !r['tchat'].nil?, score: r['score'].to_i }
