@@ -44,18 +44,17 @@
   member(s):
   - members.each_with_index do |m, i|
     - if i > 0
-      = ', '
-    %a{href: "https://twitter.com/#{m}"}
-      &= "@#{m}"
-    - s = soalition.score(m)
-    %span{class: s.negative? ? 'red' : 'green'}
-      = "(#{sprintf('%+d', s)})"
+      &= ', '
+    %a{href: "https://twitter.com/#{m[:login]}"}
+      &= "@#{m[:login]}"
+    %span{class: m[:score].negative? ? 'red' : 'green'}
+      = "(#{sprintf('%+d', m[:score])})"
 
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
     By
     %a{href: "https://twitter.com/#{p.author}"}= "@#{p.author}"
-    %a{href: p.uri}
+    %a{href: p.uri}<
       &= p.uri
     - if p.approved?
       - if p.author != author.login
@@ -67,7 +66,7 @@
       %li{style: (r['approved'] == 't' ? '' : 'gray')}
         = succeed ':' do
           %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        %a{href: r['uri']}
+        %a{href: r['uri']}<
           &= r['uri']
         - if r['approved'] == 'f'
           = "(pending)"

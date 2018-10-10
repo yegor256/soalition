@@ -32,3 +32,28 @@ while only the first three posts are positive. All other posts, which go above
 the first three lower the score. In other words, to keep the score positive
 a member of the group has to post once a month and repost all content
 shared by other members.
+
+## How to contribute
+
+You will need Java 8, Maven 3.2+, Ruby 2.3+, Bundler.
+
+Just run:
+
+```bash
+$ rake
+```
+
+To run a single test first run this, in a separate terminal:
+
+```
+$ rake pgsql liquibase sleep
+```
+
+This will start a PostgreSQL database, fill it up with the schema and stay
+waiting. Then, in another terminal:
+
+```
+$ ruby test/test_soalition.rb
+```
+
+Should work :)

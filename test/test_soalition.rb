@@ -48,6 +48,8 @@ class SoalitionTest < Minitest::Test
     assert_equal(1, soalition.members.count)
     Soalitions.new(login: random_author).join(soalition.id)
     assert_equal(2, soalition.members.count)
+    assert(soalition.members[0][:login])
+    assert(!soalition.members[0][:telegram].nil?)
   end
 
   def test_counts_score

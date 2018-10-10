@@ -56,29 +56,7 @@ class Soalition
   end
 
   def score(author)
-    days = 90
-    posts = @pgsql.exec(
-      [
-        'SELECT COUNT(*) FROM post',
-        'JOIN approve ON post.id = approve.post',
-        "WHERE soalition = $1 AND post.created > NOW() - INTERVAL '#{days} DAYS'",
-        'AND post.author = $2'
-      ].join(' '),
-      [@id, author]
-    )[0]['count'].to_i
-    reposts = @pgsql.exec(
-      [
-        'SELECT COUNT(*) FROM repost',
-        'JOIN post ON repost.post = post.id',
-        'JOIN soalition ON post.soalition = soalition.id',
-        "WHERE soalition = $1 AND repost.created > NOW() - INTERVAL '#{days} DAYS'",
-        'AND repost.author = $2 AND repost.approved = true'
-      ].join(' '),
-      [@id, author]
-    )[0]['count'].to_i
-    norma = days / 30
-    plus = norma - (posts - norma).abs
-    (reposts + plus * size).to_i
+    @pgsql.exec(score_query, [@id, author])[0]['score'].to_i
   end
 
   def share(author, uri)
@@ -103,9 +81,36 @@ class Soalition
   end
 
   def members(admins_only: false)
-    q = 'SELECT author FROM follow WHERE soalition = $1' + (admins_only ? ' AND admin = true' : '')
+    q = [
+      "SELECT follow.author, tchat.number, (#{score_query('follow.author')}) AS score FROM follow",
+      'LEFT JOIN tchat ON tchat.author = follow.author',
+      'WHERE soalition = $1',
+      admins_only ? ' AND admin = true' : ''
+    ].join(' ')
     @pgsql.exec(q, [@id]).map do |r|
-      r['author']
+      { login: r['author'], telegram: !r['tchat'].nil?, score: r['score'].to_i }
     end
+  end
+
+  private
+
+  def score_query(author = '$2')
+    days = 90
+    posts = [
+      'SELECT COUNT(*) FROM post',
+      'JOIN approve ON post.id = approve.post',
+      "WHERE soalition = $1 AND post.created > NOW() - INTERVAL '#{days} DAYS'",
+      "AND post.author = #{author}"
+    ].join(' ')
+    reposts = [
+      'SELECT COUNT(*) FROM repost',
+      'JOIN post ON repost.post = post.id',
+      'JOIN soalition ON post.soalition = soalition.id',
+      "WHERE soalition = $1 AND repost.created > NOW() - INTERVAL '#{days} DAYS'",
+      "AND repost.author = #{author} AND repost.approved = true"
+    ].join(' ')
+    norma = days / 30
+    size = 'SELECT COUNT(*) FROM follow WHERE soalition = $1'
+    "SELECT (#{reposts}) + (#{norma} - ABS((#{posts}) - #{norma})) * (#{size}) AS score"
   end
 end
