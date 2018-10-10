@@ -70,8 +70,8 @@
         %a{href: uri}<
           &= uri.host
           - if uri.path.length > 32
-            = '...'
-            &= uri.path[-32]
+            = '/...'
+            &= uri.path[-32..-1]
           - else
             = uri.path
         - if r['approved'] == 'f'
