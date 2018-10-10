@@ -22,7 +22,7 @@
 
 %p
   Invite your friends:
-  %a{href: "/join?id=#{soalition.id}"}
+  %a{href: "/join?id=#{soalition.id}"}<
     = "https://www.soalition.com/join?id=#{soalition.id}"
 
 - if score.positive? || score.zero?
@@ -45,7 +45,7 @@
   - members.each_with_index do |m, i|
     - if i > 0
       &= ', '
-    %a{href: "https://twitter.com/#{m[:login]}"}
+    %a{href: "https://twitter.com/#{m[:login]}"}<
       &= "@#{m[:login]}"
     %span{class: m[:score].negative? ? 'red' : 'green'}
       = "(#{sprintf('%+d', m[:score])})"

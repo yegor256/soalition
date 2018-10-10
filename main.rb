@@ -152,6 +152,7 @@ post '/do-share' do
   soalition = author.soalitions.one(params[:id])
   post = soalition.share(author.login, params[:uri])
   soalition.members(admins_only: true).each do |user|
+    next if user == author.login
     settings.tbot.notify(
       user,
       [
@@ -170,6 +171,7 @@ get '/join' do
   flash("/soalition?id=#{id}", 'You are a member already') if author.soalitions.member?(id)
   soalition = author.soalitions.join(id)
   soalition.members(admins_only: true).each do |user|
+    next if user == author.login
     settings.tbot.notify(
       user,
       [
@@ -193,13 +195,15 @@ get '/do-approve' do
     ].join(' ')
   )
   soalition.members.each do |user|
+    next if user == author.login
+    next if user == post.author
     settings.tbot.notify(
       user,
       [
-        "A [new post](#{post.uri}) has been shared by `@#{author.login}` in",
+        "A [new post](#{post.uri}) has been shared by `@#{post.author}` in",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}),",
         "you may want to [re-post](https://www.soalition.com/repost?id=#{post.id}) it",
-        'and earn a rew reputation points.'
+        'and earn a few reputation points.'
       ].join(' ')
     )
   end
@@ -290,6 +294,7 @@ get '/quit' do
   soalition = author.soalitions.one(params[:id])
   soalition.quit(author.login)
   soalition.members(admins_only: true).each do |user|
+    next if user == author.login
     settings.tbot.notify(
       user,
       [

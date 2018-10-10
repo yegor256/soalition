@@ -5,7 +5,7 @@
   %a{href: "https://twitter.com/#{post.author}"}<
     &= "@#{post.author}"
   asks you to repost this:
-  %a{href: post.uri}
+  %a{href: post.uri}<
     &= post.uri
 
 %form{method: 'POST', action: '/do-repost'}

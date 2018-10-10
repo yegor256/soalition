@@ -30,23 +30,23 @@
         %nav
           %ul
             %li
-              %a{href: url('/')}
+              %a{href: url('/')}<
                 %img.logo{src: url('/logo.svg')}
         %nav
           %ul
             - if session[:author]
               %li
-                %a{href: '/'}
+                %a{href: '/'}<
                   = "@#{session[:author]}"
               %li
-                %a{href: url('/share')}
+                %a{href: url('/share')}<
                   Share
               %li
-                %a{href: '/logout'}
+                %a{href: '/logout'}<
                   Logout
             - else
               %li
-                %a{href: '/login'}
+                %a{href: '/login'}<
                   Login
         - if defined? flash_msg
           %p{style: 'background-color:darkgreen;color:white;padding:.1em .5em;border-radius:4px;width:100%;'}
@@ -63,7 +63,7 @@
             %li
               = "v#{ver}"
             %li
-              %a{href: 'https://iplocation.com/?ip=' + request_ip}
+              %a{href: 'https://iplocation.com/?ip=' + request_ip}<
                 = request_ip
         %nav
           %ul
