@@ -43,7 +43,7 @@ class Reposts
   end
 
   def fetch
-    @pgsql.exec('SELECT * FROM repost WHERE post = $1', [@post.id])
+    @pgsql.exec('SELECT * FROM repost WHERE post = $1 ORDER BY created DESC', [@post.id])
   end
 
   def approve(id, friend)
