@@ -43,13 +43,13 @@
   = members.count
   = 'member' + (members.count > 1 ? 's' : '') + ':'
   - members.each_with_index do |m, i|
-    = (i.positive? ? ', ' : '')
+    <= (i.positive? ? ', ' : '')
     %a{href: "https://twitter.com/#{m[:login]}"}<
-      &= "@#{m[:login]}"
+      <&= "@#{m[:login]}"
     - if m[:telegram]
       %sup{style: 'font-size: 0.8em;'} t
     %span{class: m[:score].negative? ? 'red' : 'green'}<
-      = "(#{sprintf('%+d', m[:score])})"
+      <= "(#{sprintf('%+d', m[:score])})"
 
 - soalition.posts.each do |p|
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
