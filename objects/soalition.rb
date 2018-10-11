@@ -70,8 +70,14 @@ class Soalition
     Post.new(id: id, pgsql: @pgsql)
   end
 
-  def posts
-    @pgsql.exec('SELECT * FROM post WHERE soalition = $1 ORDER BY created DESC LIMIT 50', [@id]).map do |r|
+  def posts(days = 30)
+    q = [
+      'SELECT * FROM post',
+      "WHERE soalition = $1 AND created > NOW() - INTERVAL '#{days} DAYS'",
+      'ORDER BY created DESC',
+      'LIMIT 50'
+    ].join(' ')
+    @pgsql.exec(q, [@id]).map do |r|
       Post.new(id: r['id'].to_i, pgsql: @pgsql, hash: r)
     end
   end
