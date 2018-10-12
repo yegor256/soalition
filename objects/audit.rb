@@ -71,7 +71,12 @@ class Audit
           soalition.members.map do |m|
             "`@#{m[:login]}`: #{format('%+3d', m[:score])}"
           end.join("\n"),
-          loser.nil? ? '' : "The least effective user `@#{loser[:login]}` has been kicked out just now."
+          "\n\n",
+          loser.nil? ? '' : "The least effective user `@#{loser[:login]}` has been kicked out just now.",
+          'You can earn more reputation points by re-posting others posts.',
+          'Also you can write your own content. Go check [your inbox](https://www.soalition.com/).',
+          'You can invite more members by sharing',
+          "[this link](https://www.soalition.com/join?id=#{soalition.id}) with them."
         ].join(' ')
       )
     end
