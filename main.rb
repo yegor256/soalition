@@ -34,6 +34,7 @@ require 'omniauth-twitter'
 require_relative 'version'
 require_relative 'objects/tbot'
 require_relative 'objects/author'
+require_relative 'objects/audits'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
