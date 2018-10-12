@@ -27,9 +27,11 @@ require_relative '../objects/soalitions'
 class PostTest < Minitest::Test
   def test_shares_post
     owner = random_author
-    uri = 'https://www.google.com'
+    uri = random_uri
     soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
-    post = soalition.share(random_author, uri)
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    post = soalition.share(friend, uri)
     assert_equal(uri, post.uri)
     assert(!post.approved?)
     assert_raises do
@@ -41,9 +43,11 @@ class PostTest < Minitest::Test
 
   def test_rejects_post
     owner = random_author
-    uri = 'https://www.google.com'
+    uri = random_uri
     soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
-    post = soalition.share(random_author, uri)
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    post = soalition.share(friend, uri)
     assert(!post.approved?)
     assert_raises do
       post.reject('stranger')
@@ -53,18 +57,22 @@ class PostTest < Minitest::Test
 
   def test_adds_reposts
     owner = random_author
-    uri = 'https://www.google.com'
+    uri = random_uri
     soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
-    post = soalition.share(random_author, uri)
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    post = soalition.share(friend, uri)
     post.reposts.submit(random_author, uri)
     assert_equal(1, post.reposts.fetch.count)
   end
 
   def test_extracts_soalition
     owner = random_author
-    uri = 'https://www.google.com'
+    uri = random_uri
     soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
-    post = soalition.share(random_author, uri)
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    post = soalition.share(friend, uri)
     assert_equal(soalition.id, post.soalition.id)
   end
 end

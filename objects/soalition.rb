@@ -56,11 +56,13 @@ class Soalition
   end
 
   def score(author)
+    raise "@#{author} is not a member of soalition ##{@id}" unless member?(author)
     @pgsql.exec(score_query, [@id, author])[0]['score'].to_i
   end
 
   def share(author, uri)
     raise "Invalid URL \"#{uri}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(uri)
+    raise "You are not a member of soalition ##{@id}" unless member?(author)
     s = score(author)
     raise "Your score #{s} is too low, you can't share" if s.negative?
     id = @pgsql.exec(
@@ -82,7 +84,16 @@ class Soalition
     end
   end
 
+  def admin?(friend)
+    !@pgsql.exec('SELECT * FROM follow WHERE soalition = $1 AND author = $2 AND admin = true', [@id, friend]).empty?
+  end
+
+  def member?(friend)
+    !@pgsql.exec('SELECT * FROM follow WHERE soalition = $1 AND author = $2', [@id, friend]).empty?
+  end
+
   def quit(friend)
+    raise "You are not a member of soalition ##{@id}" unless member?(friend)
     @pgsql.exec('DELETE FROM follow WHERE soalition = $1 AND author = $2', [@id, friend])
   end
 

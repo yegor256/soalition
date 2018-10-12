@@ -29,13 +29,13 @@ class SoalitionsTest < Minitest::Test
     soalitions = Soalitions.new(login: random_author)
     assert_equal(0, soalitions.mine.count)
     name = 'мои друзья'
-    id = soalitions.create(name, 'https://www.google.com', 'Some new soalition').id
+    id = soalitions.create(name, random_uri, 'Some new soalition').id
     assert_equal(1, soalitions.mine.count)
     assert_equal(name, soalitions.one(id).name)
   end
 
   def test_join_it
-    uri = 'https://www.google.com'
+    uri = random_uri
     id = Soalitions.new(login: random_author).create('the name', uri, 'Some new soalition').id
     soalitions = Soalitions.new(login: random_author)
     assert_equal(0, soalitions.mine.count)

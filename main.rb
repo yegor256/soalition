@@ -28,6 +28,7 @@ require 'redcarpet'
 require 'json'
 require 'sinatra'
 require 'sinatra/cookies'
+require 'backtrace'
 require 'raven'
 require 'omniauth-twitter'
 require_relative 'version'
@@ -87,6 +88,16 @@ configure do
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
       settings.tbot.start
+    end
+    Thread.new do
+      loop do
+        begin
+          Audits.new(pgsql: settings.pgsql).each { |a| a.deliver(settings.tbot) }
+        rescue StandardError => e
+          puts Backtrace.new(e)
+        end
+        sleep(60)
+      end
     end
   end
 end
@@ -340,7 +351,7 @@ error do
     layout: :layout,
     locals: merged(
       title: 'error',
-      error: "#{e.message}\n\t#{e.backtrace.join("\n\t")}"
+      error: Backtrace.new(e).to_s
     )
   )
 end

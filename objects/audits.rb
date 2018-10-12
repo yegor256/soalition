@@ -14,31 +14,32 @@
 #
 # THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFINGEMENT. IN NO EVENT SHALL THE
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ENV['RACK_ENV'] = 'test'
+require_relative 'pgsql'
+require_relative 'audit'
 
-require 'simplecov'
-SimpleCov.start
-if ENV['CI'] == 'true'
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
+# Audits.
+# Author:: Yegor Bugayenko (yegor256@gmail.com)
+# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# License:: MIT
+class Audits
+  def initialize(pgsql: Pgsql::TEST)
+    @pgsql = pgsql
+  end
 
-require 'minitest/autorun'
-require 'securerandom'
-module Minitest
-  class Test
-    def random_author
-      'u' + SecureRandom.hex[0..8]
-    end
-
-    def random_uri
-      'https://www.google.com/' + SecureRandom.hex[0..8]
-    end
+  def each
+    @pgsql.exec(
+      [
+        'SELECT soalition.id FROM soalition',
+        'LEFT JOIN audit ON audit.soalition = soalition.id',
+        '  AND audit.created > NOW() - INTERVAL \'7 DAYS\'',
+        'WHERE audit.id IS NULL'
+      ].join(' '), []
+    ).map { |r| yield Audit.new(id: r['id'].to_i, pgsql: @pgsql) }
   end
 end

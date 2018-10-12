@@ -61,6 +61,7 @@ class Inbox
           'JOIN follow ON follow.soalition = soalition.id',
           'LEFT JOIN repost ON repost.post = post.id AND repost.author = $1',
           'WHERE follow.author = $1 AND repost.id IS NULL AND post.author != $1',
+          'AND post.created > NOW() - INTERVAL \'30 DAYS\'',
           'ORDER BY post.created DESC',
           'LIMIT 25'
         ].join(' '),

@@ -20,25 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-ENV['RACK_ENV'] = 'test'
-
-require 'simplecov'
-SimpleCov.start
-if ENV['CI'] == 'true'
-  require 'codecov'
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
-end
-
 require 'minitest/autorun'
-require 'securerandom'
-module Minitest
-  class Test
-    def random_author
-      'u' + SecureRandom.hex[0..8]
-    end
+require_relative 'test__helper'
+require_relative '../objects/tbot'
+require_relative '../objects/audits'
+require_relative '../objects/soalitions'
 
-    def random_uri
-      'https://www.google.com/' + SecureRandom.hex[0..8]
+class AuditsTest < Minitest::Test
+  def test_retrieves_audits
+    Audits.new.each { |a| a.deliver(Tbot::Fake.new) }
+    tbot = Tbot::Fake.new
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', random_uri, '-')
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    Audits.new.each do |a|
+      a.deliver(tbot)
     end
+    Audits.new.each { raise 'There should be no audits left' }
+    assert_equal(3, tbot.sent.count)
+    assert(tbot.sent[0].include?("#{friend}: You have been kicked out"), tbot.sent.to_s)
+    assert(tbot.sent[1].include?("#{owner}: The user `@#{friend}` has been kicked out"), tbot.sent.to_s)
+    assert(tbot.sent[2].include?("`@#{owner}`:  +0"), tbot.sent.to_s)
   end
 end

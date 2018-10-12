@@ -10,7 +10,7 @@
 - score = soalition.score(author.login)
 %p
   Your score:
-  %strong{class: (score.negative? ? 'red' : 'green')}= sprintf('%+d', score)
+  %strong{class: (score.negative? ? 'red' : 'green')}= format('%+d', score)
 
 - if score.negative?
   %p
@@ -49,7 +49,7 @@
     - if m[:telegram]
       %sup{style: 'font-size: 0.8em;'}< t
     %span{class: m[:score].negative? ? 'red' : 'green'}<
-      = "(#{sprintf('%+d', m[:score])})"
+      = "(#{format('%+d', m[:score])})"
 
 - soalition.posts.each do |p|
   - reposts = p.reposts.fetch

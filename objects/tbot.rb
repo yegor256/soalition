@@ -36,8 +36,8 @@ class Tbot
       @sent = []
     end
 
-    def post(chat, msg)
-      @sent << "#{chat}: #{msg}"
+    def notify(author, msg)
+      @sent << "#{author}: #{msg}"
     end
   end
 
@@ -95,6 +95,8 @@ class Tbot
     return if chat.empty?
     post(chat[0]['number'].to_i, msg)
   end
+
+  private
 
   def post(chat, msg, c: @client)
     return if @token.empty?
