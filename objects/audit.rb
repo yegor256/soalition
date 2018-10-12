@@ -44,8 +44,9 @@ class Audit
       [
         format("%-#{width + 2}s", "@#{m[:login]}:"),
         format('%+3d', m[:score]),
-        format('%+3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count),
-        format('%+3d', soalition.count_by_member(m[:login], days: 90))
+        format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count),
+        format('%3d', soalition.count_posts_by_member(m[:login], days: 90)),
+        format('%3d', soalition.count_reposts_by_member(m[:login], days: 90))
       ].join(' ')
     end.join("\n")
   end
@@ -84,14 +85,17 @@ class Audit
         [
           "This is what's going on in the",
           "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}) soalition,",
-          "which you are a proud member of (Twitter handle, score, inbox size, posts shared in 90 days):\n\n```\n",
+          'which you are a proud member of',
+          '(Twitter handle, score, inbox size, posts in 90 days, reposts in 90 days):',
+          "\n\n```\n",
           table,
           "\n```\n\n",
           loser.nil? ? '' : "The least effective user `@#{loser[:login]}` has been kicked out just now.",
           'You can earn more reputation points by re-posting others posts.',
           'Also you can write your own content. Go check [your inbox](https://www.soalition.com/).',
           'You can invite more members by sharing',
-          "[this link](https://www.soalition.com/join?id=#{soalition.id}) with them."
+          "[this link](https://www.soalition.com/join?id=#{soalition.id}) with them.",
+          "The full audit of the soalition activity is [here](https://www.soalition.com/audit?id=#{soalition.id})."
         ].join(' ')
       )
     end

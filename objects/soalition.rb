@@ -84,11 +84,22 @@ class Soalition
     end
   end
 
-  def count_by_member(author, days: 30)
+  def count_posts_by_member(author, days: 30)
     q = [
       'SELECT COUNT(*) FROM post',
-      "WHERE soalition = $1 AND created > NOW() - INTERVAL '#{days} DAYS'",
-      'AND author = $2'
+      'JOIN approve ON approve.post = post.id',
+      "WHERE soalition = $1 AND post.created > NOW() - INTERVAL '#{days} DAYS'",
+      'AND post.author = $2'
+    ].join(' ')
+    @pgsql.exec(q, [@id, author])[0]['count'].to_i
+  end
+
+  def count_reposts_by_member(author, days: 30)
+    q = [
+      'SELECT COUNT(*) FROM repost',
+      'JOIN post ON post.id = repost.post',
+      "WHERE soalition = $1 AND repost.created > NOW() - INTERVAL '#{days} DAYS'",
+      'AND repost.author = $2 AND repost.approved = true'
     ].join(' ')
     @pgsql.exec(q, [@id, author])[0]['count'].to_i
   end
