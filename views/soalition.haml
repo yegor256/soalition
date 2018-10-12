@@ -50,6 +50,7 @@
       %sup{style: 'font-size: 0.8em;'}< t
     %span{class: m[:score].negative? ? 'red' : 'green'}<
       = "(#{format('%+d', m[:score])})"
+  %a{href: "/audit?id=#{soalition.id}"}= "/audit"
 
 - soalition.posts.each do |p|
   - reposts = p.reposts.fetch

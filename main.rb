@@ -35,6 +35,7 @@ require_relative 'version'
 require_relative 'objects/tbot'
 require_relative 'objects/author'
 require_relative 'objects/audits'
+require_relative 'objects/audit'
 require_relative 'objects/pings'
 
 if ENV['RACK_ENV'] != 'test'
@@ -164,7 +165,7 @@ get '/share' do
 end
 
 post '/do-share' do
-  soalition = author.soalitions.one(params[:id])
+  soalition = author.soalitions.one(params[:id].to_i)
   post = soalition.share(author.login, params[:uri])
   soalition.members(admins_only: true).each do |user|
     next if user == author.login
@@ -182,7 +183,7 @@ post '/do-share' do
 end
 
 get '/join' do
-  id = params[:id]
+  id = params[:id].to_i
   flash("/soalition?id=#{id}", 'You are a member already') if author.soalitions.member?(id)
   soalition = author.soalitions.join(id)
   soalition.members(admins_only: true).each do |user|
@@ -246,7 +247,7 @@ end
 get '/approve-repost' do
   post = author.post(params[:post].to_i)
   soalition = post.soalition
-  friend = post.reposts.approve(params[:id], author.login)
+  friend = post.reposts.approve(params[:id].to_i, author.login)
   settings.tbot.notify(
     friend,
     [
@@ -260,7 +261,7 @@ end
 get '/reject-repost' do
   post = author.post(params[:post].to_i)
   soalition = post.soalition
-  friend = post.reposts.reject(params[:id], author.login)
+  friend = post.reposts.reject(params[:id].to_i, author.login)
   settings.tbot.notify(
     friend,
     [
@@ -300,15 +301,25 @@ post '/do-repost' do
 end
 
 get '/soalition' do
-  soalition = author.soalitions.one(params[:id])
+  soalition = author.soalitions.one(params[:id].to_i)
   haml :soalition, layout: :layout, locals: merged(
     title: "##{soalition.id}",
     soalition: soalition
   )
 end
 
+get '/audit' do
+  soalition = author.soalitions.one(params[:id].to_i)
+  audit = Audit.new(id: soalition.id, pgsql: settings.pgsql)
+  haml :audit, layout: :layout, locals: merged(
+    title: "##{soalition.id}",
+    soalition: soalition,
+    audit: audit
+  )
+end
+
 get '/quit' do
-  soalition = author.soalitions.one(params[:id])
+  soalition = author.soalitions.one(params[:id].to_i)
   soalition.quit(author.login)
   soalition.members(admins_only: true).each do |user|
     next if user == author.login

@@ -21,47 +21,17 @@
 # SOFTWARE.
 
 require 'minitest/autorun'
-require 'rack/test'
-require 'sinatra'
 require_relative 'test__helper'
+require_relative '../objects/audit'
 require_relative '../objects/soalitions'
-require_relative '../main.rb'
 
-module Rack
-  module Test
-    class Session
-      def default_env
-        { 'REMOTE_ADDR' => '127.0.0.1', 'HTTPS' => 'on' }.merge(headers_for_env)
-      end
-    end
-  end
-end
-
-class MainTest < Minitest::Test
-  include Rack::Test::Methods
-
-  def app
-    Sinatra::Application
-  end
-
-  def test_it_renders_front_pages
-    [
-      '/',
-      '/hello',
-      '/create',
-      '/robots.txt',
-      '/version'
-    ].each do |p|
-      get(p)
-      assert_equal(200, last_response.status, last_response.location)
-    end
-  end
-
-  def test_it_renders_soalition
-    uri = random_uri
-    soalition = Soalitions.new(login: 'tester').create('hey you', uri, '-')
-    get("/soalition?id=#{soalition.id}")
-    get("/audit?id=#{soalition.id}")
-    assert_equal(200, last_response.status, last_response.body)
+class AuditTest < Minitest::Test
+  def test_prints_table
+    owner = random_author
+    soalition = Soalitions.new(login: owner).create('hey you', random_uri, '-')
+    friend = random_author
+    Soalitions.new(login: friend).join(soalition.id)
+    audit = Audit.new(id: soalition.id)
+    assert(!audit.table.nil?)
   end
 end

@@ -33,8 +33,21 @@ class Audit
     @pgsql = pgsql
   end
 
+  def soalition
+    Soalition.new(id: @id, pgsql: @pgsql)
+  end
+
+  def table
+    soalition.members.map do |m|
+      [
+        "@#{m[:login]}:",
+        format('%+3d', m[:score]),
+        format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count)
+      ].join(' ')
+    end.join("\n")
+  end
+
   def deliver(tbot)
-    soalition = Soalition.new(id: @id, pgsql: @pgsql)
     members = soalition.members
     loser = members.last
     if loser.nil? || loser[:score].positive? || soalition.admin?(loser[:login])
@@ -69,13 +82,7 @@ class Audit
           "This is what's going on in the",
           "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}) soalition,",
           "which you are a proud member of (Twitter handle, score, inbox size):\n\n```\n",
-          soalition.members.map do |m|
-            [
-              "@#{m[:login]}:",
-              format('%+3d', m[:score]),
-              format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count)
-            ].join(' ')
-          end.join("\n"),
+          table,
           "\n```\n\n",
           loser.nil? ? '' : "The least effective user `@#{loser[:login]}` has been kicked out just now.",
           'You can earn more reputation points by re-posting others posts.',
