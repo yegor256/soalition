@@ -84,6 +84,15 @@ class Soalition
     end
   end
 
+  def count_by_member(author, days: 30)
+    q = [
+      'SELECT COUNT(*) FROM post',
+      "WHERE soalition = $1 AND created > NOW() - INTERVAL '#{days} DAYS'",
+      'AND author = $2'
+    ].join(' ')
+    @pgsql.exec(q, [@id, author])[0]['count'].to_i
+  end
+
   def admin?(friend)
     !@pgsql.exec('SELECT * FROM follow WHERE soalition = $1 AND author = $2 AND admin = true', [@id, friend]).empty?
   end
