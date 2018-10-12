@@ -140,7 +140,8 @@ end
 get '/' do
   haml :inbox, layout: :layout, locals: merged(
     title: '/',
-    inbox: author.inbox
+    inbox: author.inbox,
+    telegram: settings.tbot.identified?(author.login)
   )
 end
 

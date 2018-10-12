@@ -47,6 +47,10 @@ class Tbot
     @client = Telebot::Client.new(token) unless token.empty?
   end
 
+  def identified?(author)
+    !@pgsql.exec('SELECT * FROM tchat WHERE author = $1', [author]).empty?
+  end
+
   def identify(author, number)
     @pgsql.exec(
       'INSERT INTO tchat (author, number) VALUES ($1, $2) ON CONFLICT (author) DO UPDATE SET number = $2',

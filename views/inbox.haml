@@ -1,8 +1,11 @@
-%p
-  Talk to our
-  = succeed ',' do
-    %a{href: 'https://t.me/soalition_bot'} Telegram bot
-  it's very helpful.
+- if !telegram
+  %p
+    %span.red Attention
+    You have to talk to our
+    = succeed ',' do
+      %a{href: 'https://t.me/soalition_bot'} Telegram bot
+    it's very important!
+    It will deliver all important notifications to you.
 
 - redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 - list = inbox.fetch
