@@ -168,9 +168,9 @@ post '/do-share' do
   soalition = author.soalitions.one(params[:id].to_i)
   post = soalition.share(author.login, params[:uri])
   soalition.members(admins_only: true).each do |user|
-    next if user == author.login
+    next if user[:login] == author.login
     settings.tbot.notify(
-      user,
+      user[:login],
       [
         "A [new post](#{post.uri}) has been shared by `@#{author.login}` in",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}),",
@@ -187,9 +187,9 @@ get '/join' do
   flash("/soalition?id=#{id}", 'You are a member already') if author.soalitions.member?(id)
   soalition = author.soalitions.join(id)
   soalition.members(admins_only: true).each do |user|
-    next if user == author.login
+    next if user[:login] == author.login
     settings.tbot.notify(
-      user,
+      user[:login],
       [
         "A new member `@#{author.login}` joined",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
@@ -211,10 +211,10 @@ get '/do-approve' do
     ].join(' ')
   )
   soalition.members.each do |user|
-    next if user == author.login
-    next if user == post.author
+    next if user[:login] == author.login
+    next if user[:login] == post.author
     settings.tbot.notify(
-      user,
+      user[:login],
       [
         "A [new post](#{post.uri}) has been shared by `@#{post.author}` in",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}),",
@@ -322,9 +322,9 @@ get '/quit' do
   soalition = author.soalitions.one(params[:id].to_i)
   soalition.quit(author.login)
   soalition.members(admins_only: true).each do |user|
-    next if user == author.login
+    next if user[:login] == author.login
     settings.tbot.notify(
-      user,
+      user[:login],
       [
         "A member `@#{author.login}` just quit",
         "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."

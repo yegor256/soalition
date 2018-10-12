@@ -38,9 +38,11 @@ class Audit
   end
 
   def table
-    soalition.members.map do |m|
+    members = soalition.members
+    width = members.map { |m| m[:login].length }.max
+    members.map do |m|
       [
-        "@#{m[:login]}:",
+        format("%+#{width}s", "@#{m[:login]}:"),
         format('%+3d', m[:score]),
         format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count)
       ].join(' ')
