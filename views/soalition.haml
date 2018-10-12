@@ -52,6 +52,7 @@
       = "(#{sprintf('%+d', m[:score])})"
 
 - soalition.posts.each do |p|
+  - reposts = p.reposts.fetch
   %p{class: p.approved? ? '' : 'gray', style: 'margin-bottom:0'}
     = "##{p.id}"
     by
@@ -61,26 +62,27 @@
         %a{href: "/repost?id=#{p.id}"} Repost
     - else
       = "(not approved yet)"
-    - if p.author == author.login
+    - if p.author == author.login && reposts.empty?
       %a{href: "/do-reject?id=#{p.id}"} Delete
     %br
     %a{href: p.uri}<
       &= p.uri
-  %ul
-    - p.reposts.fetch.each do |r|
-      %li{style: (r['approved'] == 't' ? '' : 'gray')}
-        = succeed ':' do
-          %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        - uri = URI(r['uri'])
-        %a{href: uri}<
-          &= uri.host
-          - if uri.path.length > 32
-            = '/...&shy;'
-            &= uri.path[-32..-1]
-          - else
-            = uri.path
-        - if r['approved'] == 'f'
-          = "(pending)"
+  - if !reposts.empty?
+    %ul
+      - reposts.each do |r|
+        %li{style: (r['approved'] == 't' ? '' : 'gray')}
+          = succeed ':' do
+            %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+          - uri = URI(r['uri'])
+          %a{href: uri}<
+            &= uri.host
+            - if uri.path.length > 32
+              = '/...&shy;'
+              &= uri.path[-32..-1]
+            - else
+              = uri.path
+          - if r['approved'] == 'f'
+            = "(pending)"
 
 %p
   %a.red{href: "/quit?id=#{soalition.id}", onclick: "return confirm('Are you sure?');"} Quit
