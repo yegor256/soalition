@@ -42,7 +42,7 @@ class Audit
     width = members.map { |m| m[:login].length }.max
     members.map do |m|
       [
-        format("%+#{width}s", "@#{m[:login]}:"),
+        format("%-#{width + 2}s", "@#{m[:login]}:"),
         format('%+3d', m[:score]),
         format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count)
       ].join(' ')
