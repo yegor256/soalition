@@ -214,14 +214,16 @@ get '/do-reject' do
   post = author.post(params[:id].to_i)
   soalition = post.soalition
   uri = post.uri
-  settings.tbot.notify(
-    post.author,
-    [
-      "Your [post](#{uri}) has been rejected by `@#{author.login}` in",
-      "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
-    ].join(' ')
-  )
   owner = post.author
+  if author.login != owner
+    settings.tbot.notify(
+      owner,
+      [
+        "Your [post](#{uri}) has been rejected by `@#{author.login}` in",
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+      ].join(' ')
+    )
+  end
   post.reject(author.login)
   flash('/', "The post of @#{owner} has been rejected")
 end

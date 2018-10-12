@@ -61,6 +61,8 @@
         %a{href: "/repost?id=#{p.id}"} Repost
     - else
       = "(not approved yet)"
+    - if p.author == author.login
+      %a{href: "/do-reject?id=#{p.id}"} Delete
     %br
     %a{href: p.uri}<
       &= p.uri
@@ -73,7 +75,7 @@
         %a{href: uri}<
           &= uri.host
           - if uri.path.length > 32
-            = '/...'
+            = '/...&shy;'
             &= uri.path[-32..-1]
           - else
             = uri.path
