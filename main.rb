@@ -35,6 +35,7 @@ require_relative 'version'
 require_relative 'objects/tbot'
 require_relative 'objects/author'
 require_relative 'objects/audits'
+require_relative 'objects/pings'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -94,6 +95,7 @@ configure do
       loop do
         begin
           Audits.new(pgsql: settings.pgsql).each { |a| a.deliver(settings.tbot) }
+          Pings.new(pgsql: settings.pgsql).each { |p| p.deliver(settings.tbot) }
         rescue StandardError => e
           puts Backtrace.new(e)
         end
