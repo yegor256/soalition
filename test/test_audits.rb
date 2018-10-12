@@ -41,6 +41,6 @@ class AuditsTest < Minitest::Test
     assert_equal(3, tbot.sent.count)
     assert(tbot.sent[0].include?("#{friend}: You have been kicked out"), tbot.sent.to_s)
     assert(tbot.sent[1].include?("#{owner}: The user `@#{friend}` has been kicked out"), tbot.sent.to_s)
-    assert(tbot.sent[2].include?("`@#{owner}`:  +0"), tbot.sent.to_s)
+    assert(tbot.sent[2].include?("@#{owner}:  +0"), tbot.sent.to_s)
   end
 end

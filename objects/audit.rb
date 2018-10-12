@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require_relative 'pgsql'
+require_relative 'inbox'
 
 # Audit.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -67,11 +68,15 @@ class Audit
         [
           "This is what's going on in the",
           "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id}) soalition,",
-          "which you are a proud member of:\n\n",
+          "which you are a proud member of (Twitter handle, score, inbox size):\n\n```\n",
           soalition.members.map do |m|
-            "`@#{m[:login]}`: #{format('%+3d', m[:score])}"
+            [
+              "@#{m[:login]}:",
+              format('%+3d', m[:score]),
+              format('%3d', Inbox.new(login: m[:login], pgsql: @pgsql).fetch.count)
+            ].join(' ')
           end.join("\n"),
-          "\n\n",
+          "\n```\n\n",
           loser.nil? ? '' : "The least effective user `@#{loser[:login]}` has been kicked out just now.",
           'You can earn more reputation points by re-posting others posts.',
           'Also you can write your own content. Go check [your inbox](https://www.soalition.com/).',
