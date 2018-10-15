@@ -29,13 +29,15 @@
   %form{method: 'POST', action: '/do-share'}
     %fieldset
       %input{type: 'hidden', name: 'id', id: 'id', value: soalition.id}
-      %label URL of the blog post:
+      %label The URL of your new blog post to share:
       %input{type: 'url', name: 'uri', id: 'uri', autofocus: 'true', size: 50, required: 'true', autocomplete: 'off'}
       %label.small.gray
         Make sure the content you share is publicly accessible
         by everyone in this soalition and is relevant to its main topic.
-        The most popular content is: blog posts, Tweets, Facebook posts,
-        and YouTube videos.
+        The most popular content is: blog posts, books, articles, Tweets, Facebook posts,
+        and YouTube videos. The post you share will have to be approved
+        by one of the soalition administrators before it becomes visible
+        by everybody else.
       %input{type: 'submit', value: 'Share'}
 
 %p

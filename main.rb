@@ -192,7 +192,9 @@ get '/join' do
       user[:login],
       [
         "A new member `@#{author.login}` joined",
-        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id});",
+        "their Twitter profile is [here](https://twitter.com/#{author.login});",
+        "there are #{soalition.members.count} member(s) in the soalition now."
       ].join(' ')
     )
   end
@@ -327,7 +329,8 @@ get '/quit' do
       user[:login],
       [
         "A member `@#{author.login}` just quit",
-        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id})."
+        "[#{soalition.name}](https://www.soalition.com/soalition?id=#{soalition.id});",
+        "there are #{soalition.members.count} member(s) in the soalition now."
       ].join(' ')
     )
   end
