@@ -61,33 +61,10 @@ class Tbot
   def start
     return if @token.empty?
     Telebot::Bot.new(@token).run do |client, message|
-      number = message.chat.id
-      author = @pgsql.exec(
-        'SELECT author FROM tchat WHERE number = $1',
-        [number]
-      )
-      if author.empty?
-        post(
-          number,
-          [
-            'Hey, who are you? Please, click',
-            "[this link](https://www.soalition.com/tbot?chat=#{number})",
-            "so that I can identify you (don't forget to login via Twitter first)."
-          ].join(' '),
-          c: client
-        )
-      else
-        post(
-          number,
-          [
-            "I know you, you are `@#{author[0]['author']}`!",
-            "I can't really talk to you, I'm not a full-featured chat bot.",
-            'I will just update you here about the most important events,',
-            'which may happen in your [Soalition](https://www.soalition.com) account.'
-          ].join(' '),
-          c: client
-        )
-      end
+      reply(client, message)
+    rescue StandardError => e
+      puts Backtrace.new(e)
+      Raven.capture_exception(e)
     end
   end
 
@@ -101,6 +78,36 @@ class Tbot
   end
 
   private
+
+  def reply(client, message)
+    number = message.chat.id
+    author = @pgsql.exec(
+      'SELECT author FROM tchat WHERE number = $1',
+      [number]
+    )
+    if author.empty?
+      post(
+        number,
+        [
+          'Hey, who are you? Please, click',
+          "[this link](https://www.soalition.com/tbot?chat=#{number})",
+          "so that I can identify you (don't forget to login via Twitter first)."
+        ].join(' '),
+        c: client
+      )
+    else
+      post(
+        number,
+        [
+          "I know you, you are `@#{author[0]['author']}`!",
+          "I can't really talk to you, I'm not a full-featured chat bot.",
+          'I will just update you here about the most important events,',
+          'which may happen in your [Soalition](https://www.soalition.com) account.'
+        ].join(' '),
+        c: client
+      )
+    end
+  end
 
   def post(chat, msg, c: @client)
     return if @token.empty?

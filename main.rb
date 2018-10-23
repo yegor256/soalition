@@ -91,6 +91,9 @@ configure do
   if ENV['RACK_ENV'] != 'test'
     Thread.new do
       settings.tbot.start
+    rescue StandardError => e
+      puts Backtrace.new(e)
+      Raven.capture_exception(e)
     end
     Thread.new do
       loop do
@@ -99,6 +102,7 @@ configure do
           Pings.new(pgsql: settings.pgsql).each { |p| p.deliver(settings.tbot) }
         rescue StandardError => e
           puts Backtrace.new(e)
+          Raven.capture_exception(e)
         end
         sleep(60)
       end
