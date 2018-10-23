@@ -297,7 +297,7 @@ post '/do-repost' do
     ].join(' ')
   )
   flash(
-    "/soalition?id=#{post.soalition.id}",
+    "/repost?id=#{post.id}",
     "Your contribution to the post of @#{post.author} has been submitted"
   )
 end
