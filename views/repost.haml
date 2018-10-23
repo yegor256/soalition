@@ -2,6 +2,10 @@
   Repost
 
 %p
+  Since you both are members of
+  %a{href: "/soalition?id=#{post.soalition.id}"}
+    &= post.soalition.name
+  soalition,
   %a{href: "https://twitter.com/#{post.author}"}<
     &= "@#{post.author}"
   asks you to repost this:
