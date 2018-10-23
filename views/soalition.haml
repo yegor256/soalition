@@ -71,23 +71,23 @@
     %a{href: p.uri}<
       &= p.uri
   %ul
-  - if reposts.empty?
-    %li.gray No reposts as of yet...
-  - else
-    - reposts.each do |r|
-      %li{style: (r['approved'] == 't' ? '' : 'gray')}
-        = succeed ':' do
-          %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
-        - uri = URI(r['uri'])
-        %a{href: uri}<
-          &= uri.host
-          - if uri.path.length > 32
-            = '/...&shy;'
-            &= uri.path[-32..-1]
-          - else
-            = uri.path
-        - if r['approved'] == 'f'
-          = "(pending)"
+    - if reposts.empty?
+      %li.gray No reposts as of yet...
+    - else
+      - reposts.each do |r|
+        %li{style: (r['approved'] == 't' ? '' : 'gray')}
+          = succeed ':' do
+            %a{href: "https://twitter.com/#{r['author']}"}= "@#{r['author']}"
+          - uri = URI(r['uri'])
+          %a{href: uri}<
+            &= uri.host
+            - if uri.path.length > 32
+              = '/...&shy;'
+              &= uri.path[-32..-1]
+            - else
+              = uri.path
+          - if r['approved'] == 'f'
+            = "(pending)"
 
 %p
   %a.red{href: "/quit?id=#{soalition.id}", onclick: "return confirm('Are you sure?');"} Quit
