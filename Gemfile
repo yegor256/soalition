@@ -22,25 +22,25 @@
 source 'https://rubygems.org'
 ruby '2.5.1'
 
-gem 'backtrace', '~>0.3'
-gem 'codecov', '~>0.1'
-gem 'haml', '~>5.0'
-gem 'minitest', '~>5.11', require: false
-gem 'omniauth-twitter'
-gem 'pg', '~>1.1'
-gem 'rack', '~>2.0'
-gem 'rack-ssl', '~>1.4'
-gem 'rack-test', '~>1.0'
-gem 'rake', '~>12.3', require: false
-gem 'redcarpet', '~>3.4'
-gem 'rerun', '~>0.11', require: false
-gem 'rspec-rails', '~>3.7', require: false
-gem 'rubocop', '~>0.55', require: false
-gem 'rubocop-rspec', '~>1.25', require: false
-gem 'sass', '~>3.5'
-gem 'sentry-raven', '~>2.7'
-gem 'sinatra', '~>2.0'
-gem 'sinatra-contrib', '~>2.0'
-gem 'sprockets', '~>3.7'
-gem 'telebot', '~>0.1'
-gem 'xcop', '~>0.6'
+gem 'backtrace', '0.3.0'
+gem 'codecov', '0.1.14'
+gem 'haml', '5.0.4'
+gem 'minitest', '5.11.3', require: false
+gem 'omniauth-twitter', '1.4.0'
+gem 'pg', '1.1.3'
+gem 'rack', '2.0.6'
+gem 'rack-ssl', '1.4.1'
+gem 'rack-test', '1.1.0'
+gem 'rake', '12.3.1', require: false
+gem 'redcarpet', '3.4.0'
+gem 'rerun', '0.13.0', require: false
+gem 'rspec-rails', '3.8.1', require: false
+gem 'rubocop', '0.60.0', require: false
+gem 'rubocop-rspec', '1.30.1', require: false
+gem 'sass', '3.7.2'
+gem 'sentry-raven', '2.7.4'
+gem 'sinatra', '2.0.4'
+gem 'sinatra-contrib', '2.0.4'
+gem 'sprockets', '3.7.2'
+gem 'telebot', '0.1.2'
+gem 'xcop', '0.6'
