@@ -22,6 +22,7 @@
 
 require 'uri'
 require_relative 'pgsql'
+require_relative 'user_error'
 
 # Reposts.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -34,8 +35,8 @@ class Reposts
   end
 
   def submit(friend, uri)
-    raise "Invalid URL \"#{uri}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(uri)
-    raise "You can't repost your own post ##{@id}" if @post.author == friend
+    raise UserError, "Invalid URL \"#{uri}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(uri)
+    raise UserError, "You can't repost your own post ##{@id}" if @post.author == friend
     @pgsql.exec(
       'INSERT INTO repost (author, post, uri) VALUES ($1, $2, $3) RETURNING id',
       [friend, @post.id, uri]
@@ -47,14 +48,14 @@ class Reposts
   end
 
   def approve(id, friend)
-    raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    raise UserError, "You are not the author of the post ##{@post.id}" unless @post.author == friend
     author = @pgsql.exec('SELECT author FROM repost WHERE id = $1', [id])[0]['author']
     @pgsql.exec('UPDATE repost SET approved = true WHERE id = $1', [id])
     author
   end
 
   def reject(id, friend)
-    raise "You are not the author of the post ##{@post.id}" unless @post.author == friend
+    raise UserError, "You are not the author of the post ##{@post.id}" unless @post.author == friend
     author = @pgsql.exec('SELECT author FROM repost WHERE id = $1', [id])[0]['author']
     @pgsql.exec('DELETE FROM repost WHERE id = $1', [id])
     author

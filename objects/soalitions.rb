@@ -23,6 +23,7 @@
 require 'uri'
 require_relative 'pgsql'
 require_relative 'soalition'
+require_relative 'user_error'
 
 # Soalitions.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -35,10 +36,10 @@ class Soalitions
   end
 
   def create(name, icon, description)
-    raise "Invalid URL \"#{icon}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(icon)
-    raise "The name \"#{name}\" is too short (less than 4)" if name.length < 4
-    raise "The name \"#{name}\" is too long (over 32)" if name.length > 32
-    raise 'The description is too long (over 200)' if description.length > 200
+    raise UserError, "Invalid URL \"#{icon}\"" unless URI::DEFAULT_PARSER.make_regexp.match?(icon)
+    raise UserError, "The name \"#{name}\" is too short (less than 4)" if name.length < 4
+    raise UserError, "The name \"#{name}\" is too long (over 32)" if name.length > 32
+    raise UserError, 'The description is too long (over 200)' if description.length > 200
     @pgsql.connect do |c|
       c.transaction do |con|
         soalition = con.exec_params(
@@ -55,7 +56,7 @@ class Soalitions
   end
 
   def join(soalition)
-    raise "You are a member of the soalition ##{soalition} already" if member?(soalition)
+    raise UserError, "You are a member of the soalition ##{soalition} already" if member?(soalition)
     @pgsql.exec(
       'INSERT INTO follow (author, soalition) VALUES ($1, $2) RETURNING id',
       [@login, soalition]
@@ -91,7 +92,7 @@ class Soalitions
       ].join(' '),
       [id, @login]
     )
-    raise "Soalition ##{id} not found for @#{@login}" if found.empty?
+    raise UserError, "Soalition ##{id} not found for @#{@login}" if found.empty?
     Soalition.new(id: found[0]['id'].to_i, pgsql: @pgsql, hash: found[0])
   end
 end

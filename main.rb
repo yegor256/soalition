@@ -37,6 +37,7 @@ require_relative 'objects/author'
 require_relative 'objects/audits'
 require_relative 'objects/audit'
 require_relative 'objects/pings'
+require_relative 'objects/user_error'
 
 if ENV['RACK_ENV'] != 'test'
   require 'rack/ssl'
@@ -367,15 +368,19 @@ end
 error do
   status 503
   e = env['sinatra.error']
-  Raven.capture_exception(e)
-  haml(
-    :error,
-    layout: :layout,
-    locals: merged(
-      title: 'error',
-      error: Backtrace.new(e).to_s
+  if e.is_a?(UserError)
+    flash('/', e.message)
+  else
+    Raven.capture_exception(e)
+    haml(
+      :error,
+      layout: :layout,
+      locals: merged(
+        title: 'error',
+        error: Backtrace.new(e).to_s
+      )
     )
-  )
+  end
 end
 
 private

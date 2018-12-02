@@ -23,6 +23,7 @@
 require_relative 'pgsql'
 require_relative 'reposts'
 require_relative 'soalition'
+require_relative 'user_error'
 
 # Post.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
@@ -48,7 +49,7 @@ class Post
   end
 
   def approve(author)
-    raise "@#{author} can't approve post ##{@id}" unless allowed(author)
+    raise UserError, "@#{author} can't approve post ##{@id}" unless allowed(author)
     @pgsql.exec(
       'INSERT INTO approve (post, author) VALUES ($1, $2) RETURNING id',
       [@id, author]
@@ -56,7 +57,7 @@ class Post
   end
 
   def reject(author)
-    raise "@#{author} can't reject post ##{@id}" unless allowed(author)
+    raise UserError, "@#{author} can't reject post ##{@id}" unless allowed(author)
     @pgsql.exec('DELETE FROM post WHERE id = $1', [@id])
   end
 
