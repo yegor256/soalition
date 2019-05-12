@@ -22,6 +22,7 @@
 
 STDOUT.sync = true
 
+require 'pgtk/pool'
 require 'time'
 require 'haml'
 require 'redcarpet'
