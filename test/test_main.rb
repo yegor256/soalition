@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -59,7 +59,7 @@ class MainTest < Minitest::Test
 
   def test_it_renders_soalition
     uri = random_uri
-    soalition = Soalitions.new(login: 'tester').create('hey you', uri, '-')
+    soalition = Soalitions.new(login: 'tester', pgsql: test_pgsql).create('hey you', uri, '-')
     get("/soalition?id=#{soalition.id}")
     get("/audit?id=#{soalition.id}")
     assert_equal(200, last_response.status, last_response.body)

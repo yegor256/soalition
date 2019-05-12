@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -26,7 +26,7 @@ require_relative '../objects/soalitions'
 
 class SoalitionsTest < Minitest::Test
   def test_retrieves_mine
-    soalitions = Soalitions.new(login: random_author)
+    soalitions = Soalitions.new(login: random_author, pgsql: test_pgsql)
     assert_equal(0, soalitions.mine.count)
     name = 'мои друзья'
     id = soalitions.create(name, random_uri, 'Some new soalition').id
@@ -36,8 +36,10 @@ class SoalitionsTest < Minitest::Test
 
   def test_join_it
     uri = random_uri
-    id = Soalitions.new(login: random_author).create('the name', uri, 'Some new soalition').id
-    soalitions = Soalitions.new(login: random_author)
+    id = Soalitions.new(login: random_author, pgsql: test_pgsql).create(
+      'the name', uri, 'Some new soalition'
+    ).id
+    soalitions = Soalitions.new(login: random_author, pgsql: test_pgsql)
     assert_equal(0, soalitions.mine.count)
     soalition = soalitions.join(id)
     assert_equal(1, soalitions.mine.count)

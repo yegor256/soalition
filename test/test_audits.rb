@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,16 +28,16 @@ require_relative '../objects/soalitions'
 
 class AuditsTest < Minitest::Test
   def test_retrieves_audits
-    Audits.new.each { |a| a.deliver(Tbot::Fake.new) }
+    Audits.new(pgsql: test_pgsql).each { |a| a.deliver(Tbot::Fake.new) }
     tbot = Tbot::Fake.new
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', random_uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', random_uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
-    Audits.new.each do |a|
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
+    Audits.new(pgsql: test_pgsql).each do |a|
       a.deliver(tbot)
     end
-    Audits.new.each { raise 'There should be no audits left' }
+    Audits.new(pgsql: test_pgsql).each { raise 'There should be no audits left' }
     assert_equal(3, tbot.sent.count)
     assert(tbot.sent[0].include?("#{friend}: You have been kicked out"), tbot.sent.to_s)
     assert(tbot.sent[1].include?("#{owner}: The user `@#{friend}` has been kicked out"), tbot.sent.to_s)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -20,17 +20,16 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-require_relative 'pgsql'
 require_relative 'ping'
 require_relative 'inbox'
 require_relative 'soalition'
 
 # Pings.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Pings
-  def initialize(pgsql: Pgsql::TEST)
+  def initialize(pgsql:)
     @pgsql = pgsql
   end
 

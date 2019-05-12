@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -51,13 +51,6 @@ configure do
       'api_key' => '',
       'api_secret' => ''
     },
-    'pgsql' => {
-      'host' => 'localhost',
-      'port' => 0,
-      'user' => 'test',
-      'dbname' => 'test',
-      'password' => 'test'
-    },
     'sentry' => '',
     'telegram_token' => ''
   }
@@ -76,13 +69,28 @@ configure do
   set :config, config
   set :logging, true
   set :server_settings, timeout: 25
-  set :pgsql, Pgsql.new(
-    host: config['pgsql']['host'],
-    port: config['pgsql']['port'].to_i,
-    dbname: config['pgsql']['dbname'],
-    user: config['pgsql']['user'],
-    password: config['pgsql']['password']
-  )
+  if File.exist?('target/pgsql-config.yml')
+    cfg = YAML.load_file('target/pgsql-config.yml')
+    set :pgsql, Pgtk::Pool.new(
+      host: cfg['pgsql']['host'],
+      port: cfg['pgsql']['port'],
+      dbname: cfg['pgsql']['dbname'],
+      user: cfg['pgsql']['user'],
+      password: cfg['pgsql']['password'],
+      log: nil
+    )
+  else
+    uri = URI(ENV['DATABASE_URL'])
+    set :pgsql, Pgtk::Pool.new(
+      host: uri.host,
+      port: uri.port,
+      dbname: uri.path[1..-1],
+      user: uri.userinfo.split(':')[0],
+      password: uri.userinfo.split(':')[1],
+      log: nil
+    )
+  end
+  settings.pgsql.start(4)
   set :tbot, Tbot.new(token: config['telegram_token'], pgsql: settings.pgsql)
   use OmniAuth::Builder do
     provider :twitter, config['twitter']['api_key'], config['twitter']['api_secret']

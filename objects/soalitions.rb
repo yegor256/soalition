@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -21,16 +21,15 @@
 # SOFTWARE.
 
 require 'uri'
-require_relative 'pgsql'
 require_relative 'soalition'
 require_relative 'user_error'
 
 # Soalitions.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Soalitions
-  def initialize(login:, pgsql: Pgsql::TEST)
+  def initialize(login:, pgsql:)
     @login = login
     @pgsql = pgsql
   end
@@ -40,18 +39,16 @@ class Soalitions
     raise UserError, "The name \"#{name}\" is too short (less than 4)" if name.length < 4
     raise UserError, "The name \"#{name}\" is too long (over 32)" if name.length > 32
     raise UserError, 'The description is too long (over 200)' if description.length > 200
-    @pgsql.connect do |c|
-      c.transaction do |con|
-        soalition = con.exec_params(
-          'INSERT INTO soalition (name, icon, description) VALUES ($1, $2, $3) RETURNING id',
-          [name, icon, description]
-        )[0]['id'].to_i
-        con.exec_params(
-          'INSERT INTO follow (author, soalition, admin) VALUES ($1, $2, true) RETURNING id',
-          [@login, soalition]
-        )[0]['id'].to_i
-        Soalition.new(id: soalition, pgsql: @pgsql)
-      end
+    @pgsql.transaction do |t|
+      soalition = t.exec(
+        'INSERT INTO soalition (name, icon, description) VALUES ($1, $2, $3) RETURNING id',
+        [name, icon, description]
+      )[0]['id'].to_i
+      t.exec(
+        'INSERT INTO follow (author, soalition, admin) VALUES ($1, $2, true) RETURNING id',
+        [@login, soalition]
+      )[0]['id'].to_i
+      Soalition.new(id: soalition, pgsql: @pgsql)
     end
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -21,6 +21,7 @@
 # SOFTWARE.
 
 require 'rubygems'
+require 'pgtk'
 require 'rake'
 require 'rdoc'
 require 'rake/clean'
@@ -31,7 +32,7 @@ raise "Invalid encoding \"#{Encoding.default_external}\"" unless Encoding.defaul
 
 ENV['RACK_ENV'] = 'test'
 
-task default: %i[check_outdated_gems clean test rubocop xcop copyright]
+task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
 desc 'Run all unit tests'
@@ -63,53 +64,20 @@ task :config do
   YAML.safe_load(File.open('config.yml')).to_yaml
 end
 
-desc 'Start PostgreSQL Local server'
-task :pgsql do
-  FileUtils.mkdir_p('target')
-  dir = File.expand_path(File.join(Dir.pwd, 'target/pgsql'))
-  FileUtils.rm_rf(dir)
-  File.write('target/pwfile', 'test')
-  system("initdb --auth=trust -D #{dir} --username=test --pwfile=target/pwfile 2>&1")
-  raise unless $CHILD_STATUS.exitstatus.zero?
-  port = `python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'`.to_i
-  pid = Process.spawn('postgres', '-k', dir, '-D', dir, "--port=#{port}")
-  at_exit do
-    `kill -TERM #{pid}`
-    puts "PostgreSQL killed in PID #{pid}"
-  end
-  sleep 1
-  attempt = 0
-  begin
-    system("createdb -h localhost -p #{port} --username=test test 2>&1")
-    raise unless $CHILD_STATUS.exitstatus.zero?
-  rescue StandardError => e
-    puts e.message
-    sleep(5)
-    attempt += 1
-    raise if attempt > 10
-    retry
-  end
-  File.write('target/pgsql.port', port.to_s)
-  File.write(
-    'target/config.yml',
-    [
-      'pgsql:',
-      '  host: localhost',
-      "  port: #{port}",
-      '  dbname: test',
-      '  user: test',
-      '  password: test',
-      "  url: jdbc:postgresql://localhost:#{port}/test?user=test&password=test"
-    ].join("\n")
-  )
-  puts "PostgreSQL is running in PID #{pid}"
+require 'pgtk/pgsql_task'
+Pgtk::PgsqlTask.new(:pgsql) do |t|
+  t.dir = 'target/pgsql'
+  t.fresh_start = true
+  t.user = 'test'
+  t.password = 'test'
+  t.dbname = 'test'
+  t.yaml = 'target/pgsql-config.yml'
 end
 
-desc 'Update the database via Liquibase'
-task :liquibase do
-  yml = YAML.safe_load(File.open(File.exist?('config.yml') ? 'config.yml' : 'target/config.yml'))
-  system("mvn -f liquibase verify \"-Durl=#{yml['pgsql']['url']}\" --errors 2>&1")
-  raise unless $CHILD_STATUS.exitstatus.zero?
+require 'pgtk/liquibase_task'
+Pgtk::LiquibaseTask.new(:liquibase) do |t|
+  t.master = 'liquibase/master.xml'
+  t.yaml = ['target/pgsql-config.yml', 'config.yml']
 end
 
 desc 'Sleep endlessly after the start of DynamoDB Local server'
@@ -132,15 +100,9 @@ task :front do
 end
 
 task :copyright do
-  sh "grep -q -r '#{Date.today.strftime('%Y')}' \
+  sh "grep -q -r '2018-#{Date.today.strftime('%Y')}' \
     --include '*.rb' \
     --include '*.txt' \
     --include 'Rakefile' \
     ."
-end
-
-task :check_outdated_gems do
-  sh 'bundle outdated' do |ok, _|
-    puts 'Some dependencies are outdated' unless ok
-  end
 end

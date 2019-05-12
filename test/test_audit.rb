@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,10 +28,10 @@ require_relative '../objects/soalitions'
 class AuditTest < Minitest::Test
   def test_prints_table
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', random_uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', random_uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
-    audit = Audit.new(id: soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
+    audit = Audit.new(id: soalition.id, pgsql: test_pgsql)
     assert(!audit.table.nil?)
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -21,17 +21,16 @@
 # SOFTWARE.
 
 require 'uri'
-require_relative 'pgsql'
 require_relative 'post'
 
 # Soalition.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Soalition
   attr_reader :id
 
-  def initialize(id:, pgsql: Pgsql::TEST, hash: {})
+  def initialize(id:, pgsql:, hash: {})
     raise "Soalition Id must be a number: #{id} (#{id.class.name})" unless id.is_a?(Integer)
     raise "Soalition Id must be positive: #{id}" unless id.positive?
     @id = id

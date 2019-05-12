@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -31,6 +31,7 @@ end
 
 require 'minitest/autorun'
 require 'securerandom'
+require 'pgtk/pool'
 module Minitest
   class Test
     def random_author
@@ -39,6 +40,19 @@ module Minitest
 
     def random_uri
       'https://www.google.com/' + SecureRandom.hex[0..8]
+    end
+
+    def test_pgsql
+      config = YAML.load_file('target/pgsql-config.yml')
+      # rubocop:disable Style/ClassVars
+      @@test_pgsql ||= Pgtk::Pool.new(
+        host: config['pgsql']['host'],
+        port: config['pgsql']['port'],
+        dbname: config['pgsql']['dbname'],
+        user: config['pgsql']['user'],
+        password: config['pgsql']['password']
+      ).start(4)
+      # rubocop:enable Style/ClassVars
     end
   end
 end

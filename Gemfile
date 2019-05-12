@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -20,14 +20,14 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.5.1'
+ruby '2.6.0'
 
 gem 'backtrace', '0.3.0'
 gem 'codecov', '0.1.14'
 gem 'haml', '5.0.4'
 gem 'minitest', '5.11.3', require: false
 gem 'omniauth-twitter', '1.4.0'
-gem 'pg', '1.1.3'
+gem 'pgtk', '0.6.1'
 gem 'rack', '2.0.6'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
@@ -35,7 +35,7 @@ gem 'rake', '12.3.1', require: false
 gem 'redcarpet', '3.4.0'
 gem 'rerun', '0.13.0', require: false
 gem 'rspec-rails', '3.8.1', require: false
-gem 'rubocop', '0.60.0', require: false
+gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.30.1', require: false
 gem 'sass', '3.7.2'
 gem 'sentry-raven', '2.7.4'

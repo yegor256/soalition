@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,9 +28,9 @@ class PostTest < Minitest::Test
   def test_shares_post
     owner = random_author
     uri = random_uri
-    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
     post = soalition.share(friend, uri)
     assert_equal(uri, post.uri)
     assert(!post.approved?)
@@ -44,9 +44,9 @@ class PostTest < Minitest::Test
   def test_rejects_post
     owner = random_author
     uri = random_uri
-    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
     post = soalition.share(friend, uri)
     assert(!post.approved?)
     assert_raises do
@@ -58,9 +58,9 @@ class PostTest < Minitest::Test
   def test_adds_reposts
     owner = random_author
     uri = random_uri
-    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
     post = soalition.share(friend, uri)
     post.reposts.submit(random_author, uri)
     assert_equal(1, post.reposts.fetch.count)
@@ -69,9 +69,9 @@ class PostTest < Minitest::Test
   def test_extracts_soalition
     owner = random_author
     uri = random_uri
-    soalition = Soalitions.new(login: owner).create('hey you', uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
     post = soalition.share(friend, uri)
     assert_equal(soalition.id, post.soalition.id)
   end

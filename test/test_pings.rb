@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -28,19 +28,19 @@ require_relative '../objects/soalitions'
 
 class PingsTest < Minitest::Test
   def test_retrieves_pings
-    Pings.new.each { |p| p.deliver(Tbot::Fake.new) }
+    Pings.new(pgsql: test_pgsql).each { |p| p.deliver(Tbot::Fake.new) }
     tbot = Tbot::Fake.new
     owner = random_author
-    soalition = Soalitions.new(login: owner).create('hey you', random_uri, '-')
+    soalition = Soalitions.new(login: owner, pgsql: test_pgsql).create('hey you', random_uri, '-')
     friend = random_author
-    Soalitions.new(login: friend).join(soalition.id)
+    Soalitions.new(login: friend, pgsql: test_pgsql).join(soalition.id)
     soalition.share(friend, random_uri)
     soalition.share(friend, random_uri)
     soalition.share(friend, random_uri)
-    Pings.new.each do |p|
+    Pings.new(pgsql: test_pgsql).each do |p|
       p.deliver(tbot)
     end
-    Pings.new.each { raise 'There should be no pings left' }
+    Pings.new(pgsql: test_pgsql).each { raise 'There should be no pings left' }
     assert_equal(1, tbot.sent.count)
     assert(tbot.sent[0].include?('There are 3 open items'))
   end

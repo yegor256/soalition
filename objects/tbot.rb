@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018 Yegor Bugayenko
+# Copyright (c) 2018-2019 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -22,11 +22,10 @@
 
 require 'yaml'
 require 'telebot'
-require_relative 'pgsql'
 
 # Telegram Bot.
 # Author:: Yegor Bugayenko (yegor256@gmail.com)
-# Copyright:: Copyright (c) 2018 Yegor Bugayenko
+# Copyright:: Copyright (c) 2018-2019 Yegor Bugayenko
 # License:: MIT
 class Tbot
   # Fake one
@@ -41,7 +40,7 @@ class Tbot
     end
   end
 
-  def initialize(token: '', pgsql: Pgsql::TEST)
+  def initialize(token: '', pgsql:)
     @token = token
     @pgsql = pgsql
     @client = Telebot::Client.new(token) unless token.empty?
