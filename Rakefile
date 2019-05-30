@@ -35,7 +35,6 @@ ENV['RACK_ENV'] = 'test'
 task default: %i[clean test rubocop xcop copyright]
 
 require 'rake/testtask'
-desc 'Run all unit tests'
 Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
   Rake::Cleaner.cleanup_files(['coverage'])
   test.libs << 'lib' << 'test'
@@ -45,14 +44,12 @@ Rake::TestTask.new(test: %i[pgsql liquibase]) do |test|
 end
 
 require 'rubocop/rake_task'
-desc 'Run RuboCop on all directories'
 RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = true
   task.requires << 'rubocop-rspec'
 end
 
 require 'xcop/rake_task'
-desc 'Validate all XML/XSL/XSD/HTML files for formatting'
 Xcop::RakeTask.new :xcop do |task|
   task.license = 'LICENSE.txt'
   task.includes = ['**/*.xml', '**/*.xsl', '**/*.xsd', '**/*.html']
@@ -80,18 +77,7 @@ Pgtk::LiquibaseTask.new(:liquibase) do |t|
   t.yaml = ['target/pgsql-config.yml', 'config.yml']
 end
 
-desc 'Sleep endlessly after the start of DynamoDB Local server'
-task :sleep do
-  port = File.read('target/pgsql.port').to_i
-  loop do
-    system("psql -h localhost -p #{port} --username=test --command='\\x' 2>&1")
-    raise unless $CHILD_STATUS.exitstatus.zero?
-    puts 'PostgreSQL is still alive, will ping again in a while...'
-    sleep(30)
-  end
-end
-
-task run: %i[pgsql front] do
+task run: %i[pgsql liquibase front] do
   # nothing special
 end
 

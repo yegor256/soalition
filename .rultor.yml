@@ -38,7 +38,8 @@ release:
     git commit -m 'config.yml'
     git push -f heroku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
-    rake liquibase
+    rm -rf target
+    bundle exec rake liquibase
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.soalition.com > /dev/null
   commanders:
@@ -50,5 +51,5 @@ merge:
   script: |-
     pdd -f /dev/null
     bundle install
-    rake
+    bundle exec rake
 deploy: {}
