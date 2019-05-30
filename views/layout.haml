@@ -6,7 +6,7 @@
     %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
     %meta{name: 'keywords', content: 'social, coalition, writers, bloggers'}
     %meta{name: 'description', content: 'Social coalitions for online writers'}
-    %link{href: 'https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css.min.css', rel: 'stylesheet'}
+    %link{href: 'https://cdn.jsdelivr.net/gh/yegor256/tacit@gh-pages/tacit-css.min.css', rel: 'stylesheet'}
     %link{href: 'https://www.yegor256.com/css/icons.css', rel: 'stylesheet'}
     %link{rel: 'shortcut icon', href: url('/logo-64.png')}
     %script{src: 'https://code.jquery.com/jquery-3.3.1.min.js'}
@@ -57,11 +57,11 @@
         %nav
           %ul
             %li
-              &copy; 2018 Soalition
+              &copy; 2018-2019 Soalition
         %nav
           %ul
             %li
-              = "v#{ver}"
+              = "#{ENV['HEROKU_RELEASE_VERSION']}/#{ver}"
             %li
               %a{href: 'https://iplocation.com/?ip=' + request_ip}<
                 = request_ip
@@ -75,4 +75,7 @@
             %li
               %a{href: 'https://github.com/yegor256/soalition/stargazers'}<
                 %img{src: 'https://img.shields.io/github/stars/yegor256/soalition.svg?style=flat-square'}
+            %li
+              %a{href: 'https://www.sixnines.io/h/764c'}<
+                %img{src: 'https://www.sixnines.io/b/764c?style=flat'}
 
