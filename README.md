@@ -10,7 +10,7 @@
 [![Test Coverage](https://img.shields.io/codecov/c/github/yegor256/soalition.svg)](https://codecov.io/github/yegor256/soalition?branch=master)
 [![Maintainability](https://api.codeclimate.com/v1/badges/451556110dacf73cc6f6/maintainability)](https://codeclimate.com/github/yegor256/soalition/maintainability)
 
-[![Availability at SixNines](https://www.sixnines.io/b/764c)](https://www.sixnines.io/h/764c)
+[![Availability at SixNines](https://www.sixnines.io/b/79be)](https://www.sixnines.io/h/79be)
 [![Hits-of-Code](https://hitsofcode.com/github/yegor256/soalition)](https://hitsofcode.com/view/github/yegor256/soalition)
 
 It's a social coalition management web app for online writers.
