@@ -22,7 +22,7 @@ release:
     bundle install --no-color
     ruby -v
     rake
-    git remote add heroku git@heroku.com:soalition.git
+    git remote add dokku dokku@www.soalition.com:soalition
     rm -rf ~/.ssh
     mkdir ~/.ssh
     mv ../id_rsa ../id_rsa.pub ~/.ssh
@@ -36,7 +36,7 @@ release:
     rake config
     git add config.yml
     git commit -m 'config.yml'
-    git push -f heroku $(git symbolic-ref --short HEAD):master
+    git push -f dokku $(git symbolic-ref --short HEAD):master
     git reset HEAD~1
     rm -rf target
     bundle exec rake liquibase
