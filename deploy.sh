@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 cd $(dirname $0)
 bundle update
@@ -9,7 +10,7 @@ cp /code/home/assets/soalition/config.yml .
 git add config.yml
 git add Gemfile.lock
 git add .gitignore
-git commit -m 'config.yml for heroku'
+git commit -m 'config.yml for dokku'
 trap 'git reset HEAD~1 && rm config.yml && git checkout -- .gitignore' EXIT
-git push heroku master -f
+git push dokku master -f
 
