@@ -71,24 +71,12 @@ configure do
   set :logging, true
   set :server_settings, timeout: 25
   if File.exist?('target/pgsql-config.yml')
-    cfg = YAML.load_file('target/pgsql-config.yml')
     set :pgsql, Pgtk::Pool.new(
-      host: cfg['pgsql']['host'],
-      port: cfg['pgsql']['port'],
-      dbname: cfg['pgsql']['dbname'],
-      user: cfg['pgsql']['user'],
-      password: cfg['pgsql']['password'],
-      log: nil
+      Pgtk::Wire::Yaml.new(File.join(__dir__, 'target/pgsql-config.yml'))
     )
   else
-    uri = URI(ENV['DATABASE_URL'])
     set :pgsql, Pgtk::Pool.new(
-      host: uri.host,
-      port: uri.port,
-      dbname: uri.path[1..-1],
-      user: uri.userinfo.split(':')[0],
-      password: uri.userinfo.split(':')[1],
-      log: nil
+      Pgtk::Wire::Env.new('DATABASE_URL')
     )
   end
   settings.pgsql.start(4)
