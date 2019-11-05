@@ -4,7 +4,7 @@ set -x
 
 cd $(dirname $0)
 bundle update
-# rake
+bundle exec rake
 sed -i -s 's|Gemfile.lock||g' .gitignore
 cp /code/home/assets/soalition/config.yml .
 git add config.yml
