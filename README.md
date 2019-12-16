@@ -1,4 +1,4 @@
-<img src="http://www.soalition.com/logo.svg" width="92px" height="92px"/>
+<img src="https://www.soalition.com/logo.svg" width="92px" height="92px"/>
 
 [![EO principles respected here](https://www.elegantobjects.org/badge.svg)](https://www.elegantobjects.org)
 [![Managed by Zerocracy](https://www.0crat.com/badge/CAZPZR9FS.svg)](https://www.0crat.com/p/CAZPZR9FS)
