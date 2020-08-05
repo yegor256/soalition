@@ -8,20 +8,15 @@ install: |-
   export PATH=$PATH:/usr/lib/postgresql/10/bin
   sudo apt-get -y update
   sudo apt-get -y install libpq-dev
-  sudo gem install pdd -v 0.20.5
   git config --global user.email "server@soalition.com"
   git config --global user.name "soalition.com"
+  pdd -f /dev/null
+  sudo bundle install --no-color "--gemfile=$(pwd)/Gemfile"
 release:
   sensitive:
     - config.yml
   script: |-
-    pdd -f /dev/null
-    export GEM_HOME=~/.ruby
-    export GEM_PATH=$GEM_HOME:$GEM_PATH
-    export LC_ALL=en_US.UTF-8
-    bundle install --no-color
-    ruby -v
-    rake
+    bundle exec rake
     git remote add dokku dokku@www.soalition.com:soalition
     rm -rf ~/.ssh
     mkdir ~/.ssh
@@ -33,7 +28,7 @@ release:
     git add ./version.rb
     git commit -m 'build number set'
     cp ../config.yml config.yml
-    rake config
+    bundle exec rake config
     git add config.yml
     git commit -m 'config.yml'
     git push -f dokku $(git symbolic-ref --short HEAD):master
@@ -42,14 +37,10 @@ release:
     bundle exec rake liquibase
     rm -rf config.yml
     curl -f --connect-timeout 15 --retry 5 --retry-delay 30 http://www.soalition.com > /dev/null
-  commanders:
-  - yegor256
-architect:
-- yegor256
 merge:
-  commanders: []
   script: |-
-    pdd -f /dev/null
-    bundle install
     bundle exec rake
-deploy: {}
+deploy:
+  script: |-
+    echo "Nothing to deploy"
+    exit 1
