@@ -23,7 +23,7 @@ source 'https://rubygems.org'
 ruby '2.6.0'
 
 gem 'backtrace', '0.3.0'
-gem 'codecov', '0.1.14'
+gem 'codecov', '0.6.0'
 gem 'haml', '5.0.4'
 gem 'loog', '0.2.1'
 gem 'minitest', '5.11.3', require: false
