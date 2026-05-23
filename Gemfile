@@ -20,7 +20,7 @@
 # SOFTWARE.
 
 source 'https://rubygems.org'
-ruby '2.6.0'
+ruby '2.7.8'
 
 gem 'backtrace', '0.4.1'
 gem 'codecov', '0.1.14'
