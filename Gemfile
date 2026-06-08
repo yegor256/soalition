@@ -39,7 +39,7 @@ gem 'rspec-rails', '3.8.1', require: false
 gem 'rubocop', '0.62.0', require: false
 gem 'rubocop-rspec', '1.30.1', require: false
 gem 'sass', '3.7.4'
-gem 'sentry-raven', '2.7.4'
+gem 'sentry-raven', '2.13.0'
 gem 'sinatra', '4.2.0'
 gem 'sinatra-contrib', '2.0.4'
 gem 'sprockets', '3.7.5'
