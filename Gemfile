@@ -32,7 +32,7 @@ gem 'pgtk', '0.7.5'
 gem 'rack', '2.2.23'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '1.1.0'
-gem 'rake', '12.3.3', require: false
+gem 'rake', '13.4.2', require: false
 gem 'redcarpet', '3.5.1'
 gem 'rerun', '0.13.0', require: false
 gem 'rspec-rails', '3.8.1', require: false
