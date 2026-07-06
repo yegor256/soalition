@@ -27,7 +27,7 @@ gem 'codecov', '0.1.14'
 gem 'haml', '5.2.2'
 gem 'loog', '0.2.1'
 gem 'minitest', '5.27.0', require: false
-gem 'omniauth-twitter', '1.4.0'
+gem 'omniauth-twitter', '1.5.0'
 gem 'pgtk', '0.7.5'
 gem 'rack', '2.2.23'
 gem 'rack-ssl', '1.4.1'
