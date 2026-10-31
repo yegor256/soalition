@@ -15,6 +15,7 @@ jobs:
     env:
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
+      CI: "false"
     steps:
       - uses: actions/checkout@v6
       - run: sudo apt-get -y update
