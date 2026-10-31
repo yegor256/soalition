@@ -1,0 +1,6 @@
+%p
+  You have to login via Twitter.
+
+%form{method: 'post', action: '/auth/twitter'}
+  %input{type: 'hidden', name: 'authenticity_token', value: token}
+  %button{type: 'submit'} Login via Twitter
