@@ -17,7 +17,7 @@ jobs:
       LC_ALL: C.UTF-8
       CI: "false"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - run: sudo apt-get -y update
       - run: sudo apt-get -y install postgresql libpq-dev
       - run: echo "$(ls -d /usr/lib/postgresql/*/bin | tail -1)" >> "$GITHUB_PATH"
