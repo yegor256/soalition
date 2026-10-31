@@ -29,7 +29,7 @@ gem 'loog', '0.2.1'
 gem 'minitest', '5.27.0', require: false
 gem 'omniauth-twitter', '1.4.0'
 gem 'pgtk', '0.7.5'
-gem 'rack', '3.2.4'
+gem 'rack', '3.2.8'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '2.2.0'
 gem 'rake', '12.3.3', require: false
