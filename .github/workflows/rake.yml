@@ -1,0 +1,31 @@
+# Copyright (c) 2018-2026 Yegor Bugayenko
+# SPDX-License-Identifier: MIT
+---
+name: rake
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  rake:
+    runs-on: ubuntu-24.04
+    env:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+    steps:
+      - uses: actions/checkout@v6
+      - run: sudo apt-get -y update
+      - run: sudo apt-get -y install postgresql libpq-dev
+      - run: echo "$(ls -d /usr/lib/postgresql/*/bin | tail -1)" >> "$GITHUB_PATH"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.2
+          bundler-cache: true
+      - run: bundle exec rake
