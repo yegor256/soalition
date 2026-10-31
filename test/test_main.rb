@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Copyright (c) 2018-2020 Yegor Bugayenko
+# Copyright (c) 2018-2026 Yegor Bugayenko
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the 'Software'), to deal
@@ -63,5 +63,15 @@ class MainTest < Minitest::Test
     get("/soalition?id=#{soalition.id}")
     get("/audit?id=#{soalition.id}")
     assert_equal(200, last_response.status, last_response.body)
+  end
+
+  def test_it_starts_oauth_with_post_from_login_page
+    OmniAuth.config.test_mode = true
+    get('/login')
+    token = last_response.body[/name=['"]authenticity_token['"][^>]*value=['"]([^'"]+)['"]/, 1]
+    post('/auth/twitter', authenticity_token: token)
+    assert_equal('/auth/twitter/callback', URI(last_response.location).path, last_response.body)
+  ensure
+    OmniAuth.config.test_mode = false
   end
 end
