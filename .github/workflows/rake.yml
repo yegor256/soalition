@@ -27,6 +27,6 @@ jobs:
           java-version: 21
       - uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.2
+          ruby-version: 3.4
       - run: bundle install --no-color
       - run: bundle exec rake
