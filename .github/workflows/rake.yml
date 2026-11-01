@@ -11,7 +11,7 @@ name: rake
       - master
 jobs:
   rake:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       LANG: C.UTF-8
       LC_ALL: C.UTF-8
