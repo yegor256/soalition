@@ -33,7 +33,7 @@ gem 'rack', '3.2.8'
 gem 'rack-ssl', '1.4.1'
 gem 'rack-test', '2.3.0'
 gem 'rake', '12.3.3', require: false
-gem 'random-port', '0.7.6'
+gem 'random-port', '0.8.2'
 gem 'redcarpet', '3.5.1'
 gem 'rerun', '0.13.0', require: false
 gem 'rspec-rails', '3.8.1', require: false
